@@ -15,6 +15,7 @@ let deltaTime = 0;
 let newTime = new Date().getTime();
 let oldTime = new Date().getTime();
 let obstaclesPool = [];
+let landObstaclesPool = [];
 let particlesPool = [];
 let particlesInUse = [];
 
@@ -97,6 +98,10 @@ function resetGame(){
     obstacleValue                 :10,
     obstaclesSpeed                :.6,
     obstacleLastSpawn             :0,
+    landObstacleDistanceTolerance :10,
+    landObstacleValue             :10,
+    landObstaclesSpeed            :.1,
+    landObstacleLastSpawn         :0,
     distanceForObstaclesSpawn     :50,
     status                        : "playing",
   };
@@ -216,10 +221,14 @@ function loop(){
       game.targetBaseSpeed += game.incrementSpeedByTime*deltaTime;
     }
 
-
     if (Math.floor(game.distance)%game.distanceForObstaclesSpawn == 0 && Math.floor(game.distance) > game.obstacleLastSpawn){
       game.obstacleLastSpawn = Math.floor(game.distance);
       obstaclesHolder.spawnObstacles();
+    }
+
+    if (Math.floor(game.distance)%game.distanceForEnemiesSpawn == 0 && Math.floor(game.distance) > game.landObstacleLastSpawn){
+      game.landObstacleLastSpawn = Math.floor(game.distance);
+      landObstaclesHolder.spawnObstacles();
     }
 
     // if (Math.floor(game.distance)%game.distanceForLandObstaclesSpawn == 0 && Math.floor(game.distance) > game.landObstacleLastSpawn){
