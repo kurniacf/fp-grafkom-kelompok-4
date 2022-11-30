@@ -8,24 +8,52 @@ function createObstacles(){
   scene.add(obstaclesHolder.mesh)
 }
 
-function Obstacle(){
-  // let geom = new THREE.TetrahedronGeometry(8,2);
-  let geom = new THREE.CubeGeometry(12, 12, 12);
+function createLandObstacles(){
+  for (let i=0; i<10; i++){
+    let landObstacle = new LandObstacle();
+    landObstaclesPool.push(landObstacle);
+  }
+  landObstaclesHolder = new LandObstacleHolder();
+  scene.add(landObstaclesHolder.mesh)
+}
+
+Obstacle = function(){
+  let geom = new THREE.DodecahedronGeometry(8,0);
+  //let geom = new THREE.CubeGeometry(12, 12, 12);
   let mat = new THREE.MeshPhongMaterial({
-    color:colorList.brownDark,
+    color:new THREE.Color( 0xC7BCA1 ),
     shininess:0,
-    specular:0xffffff,
+    specular:0x252525,
     shading:THREE.FlatShading
   });
   this.mesh = new THREE.Mesh(geom,mat);
   this.mesh.castShadow = true;
-  this.angle = 0;
+  this.angle = 0.25;
   this.dist = 0;
 }
 
-function ObstaclesHolder(){
+LandObstacle = function(){
+  let geom = new THREE.BoxGeometry(20, 20, 20);
+  let mat = new THREE.MeshPhongMaterial({
+    color:new THREE.Color( 0x8B7E74 ),
+    shininess:0,
+    specular:0x252525,
+    shading:THREE.FlatShading
+  });
+  this.mesh = new THREE.Mesh(geom,mat);
+  this.mesh.castShadow = true;
+  this.angle = 0.25;
+  this.dist = 0;
+}
+
+ObstaclesHolder = function (){
   this.mesh = new THREE.Object3D();
   this.obstaclesInUse = [];
+}
+
+LandObstacleHolder = function (){
+  this.mesh = new THREE.Object3D();
+  this.landObstaclesInUse = [];
 }
 
 ObstaclesHolder.prototype.spawnObstacles = function(){
@@ -35,7 +63,7 @@ ObstaclesHolder.prototype.spawnObstacles = function(){
     let obstacle;
     if (obstaclesPool.length) {
       obstacle = obstaclesPool.pop();
-    }else{
+    } else{
       obstacle = new Obstacle();
     }
 
@@ -80,5 +108,26 @@ ObstaclesHolder.prototype.rotateObstacles = function(){
       this.mesh.remove(obstacle.mesh);
       i--;
     }
+  }
+}
+
+LandObstacleHolder.prototype.spawnObstacles = function(){
+  let nObstacles = game.level;
+
+  for (let i=0; i<nObstacles; i++){
+  let landObstacle;
+    if (landObstaclesPool.length) {
+      landObstacle = landObstaclesPool.pop();
+    }else{
+      landObstacle = new LandObstacle();
+    }
+
+    landObstacle.angle = - (i*0.5);
+    landObstacle.distance = game.waterRadius + game.planeDefaultHeight + (-1 + Math.random() * 2) * (game.planeAmpHeight-20);
+    landObstacle.mesh.position.y = -game.waterRadius + Math.sin(landObstacle.angle)*landObstacle.distance;
+    landObstacle.mesh.position.x = Math.cos(landObstacle.angle)*landObstacle.distance;
+
+    this.mesh.add(landObstacle.mesh);
+    this.landObstaclesInUse.push(landObstacle);
   }
 }
