@@ -1,18 +1,22 @@
-function createObstacles(){
-  for (let i=0; i<10; i++){
-    let obstacle = new Obstacle();
-    obstaclesPool.push(obstacle);
-  }
-  obstaclesHolder = new ObstaclesHolder();
-  // obstaclesHolder.mesh.position.y = -game.seaRadius;
-  scene.add(obstaclesHolder.mesh)
+function createLandObstacles(){
+    for(let i=0; i<5; i++){
+        let obstacle = new landObstacle();
+        obstaclesPool.push(obstacle);
+    }
+//   for (let i=0; i<10; i++){
+//     let obstacle = new Obstacle();
+//     obstaclesPool.push(obstacle);
+//   }
+//   obstaclesHolder = new ObstaclesHolder();
+//   // obstaclesHolder.mesh.position.y = -game.seaRadius;
+//   scene.add(obstaclesHolder.mesh)
 }
 
-function Obstacle(){
+function landObstacle() {
   // let geom = new THREE.TetrahedronGeometry(8,2);
-  let geom = new THREE.CubeGeometry(12, 12, 12);
+  let geom = new THREE.BoxGeometry(12, 12, 12);
   let mat = new THREE.MeshPhongMaterial({
-    color:colorList.brownDark,
+    color:colorList.yellow,
     shininess:0,
     specular:0xffffff,
     shading:THREE.FlatShading
@@ -29,15 +33,15 @@ function ObstaclesHolder(){
 }
 
 ObstaclesHolder.prototype.spawnObstacles = function(){
-  let nObstacles = game.level;
+    let gameObstacle = game.level;
 
-  for (let i=0; i<nObstacles; i++){
-    let obstacle;
-    if (obstaclesPool.length) {
-      obstacle = obstaclesPool.pop();
-    }else{
-      obstacle = new Obstacle();
-    }
+    for (let i=0; i<gameObstacle; i++) {
+        let obstacle;
+        if (obstaclesPool.length) {
+            obstacle = obstaclesPool.pop();
+        } else {
+            obstacle = new Obstacle();
+        }
 
     obstacle.angle = - (i*0.1);
     obstacle.distance = game.waterRadius + game.planeDefaultHeight + (-1 + Math.random() * 2) * (game.planeAmpHeight-20);
@@ -46,7 +50,7 @@ ObstaclesHolder.prototype.spawnObstacles = function(){
 
     this.mesh.add(obstacle.mesh);
     this.obstaclesInUse.push(obstacle);
-  }
+    }
 }
 
 ObstaclesHolder.prototype.rotateObstacles = function(){
