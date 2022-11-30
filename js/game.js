@@ -85,20 +85,20 @@ function resetGame(){
     wavesMaxAmp                   :20,
     wavesMinSpeed                 :0.001,
     wavesMaxSpeed                 :0.003,
-    cameraFarPos:500,
-    cameraNearPos:150,
-    cameraSensivity:0.002,
-    coinDistanceTolerance:15,
-    coinValue:10,
-    coinsSpeed:.5,
-    coinLastSpawn:0,
-    distanceForCoinsSpawn:100,
-    obstacleDistanceTolerance:10,
-    obstacleValue:10,
-    obstaclesSpeed:.6,
-    obstacleLastSpawn:0,
-    distanceForObstaclesSpawn:50,
-    status : "playing",
+    cameraFarPos                  :500,
+    cameraNearPos                 :150,
+    cameraSensivity               :0.002,
+    coinDistanceTolerance         :15,
+    coinValue                     :10,
+    coinsSpeed                    :.5,
+    coinLastSpawn                 :0,
+    distanceForCoinsSpawn         :100,
+    obstacleDistanceTolerance     :10,
+    obstacleValue                 :10,
+    obstaclesSpeed                :.6,
+    obstacleLastSpawn             :0,
+    distanceForObstaclesSpawn     :50,
+    status                        : "playing",
   };
   scoreCounter.innerHTML = 'Score = ' + game.score;
   healthCounter.innerHTML = 'Health = ' + game.energy;
@@ -167,7 +167,6 @@ function handleMouseUp(event){
   }
 }
 
-
 function handleTouchEnd(event){
   if (game.status == "waitingReplay"){
     resetGame();
@@ -176,11 +175,8 @@ function handleTouchEnd(event){
 }
 
 function createLights() {
-
   hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, .9)
-
   ambientLight = new THREE.AmbientLight(0xdc8874, .5);
-
   shadowLight = new THREE.DirectionalLight(0xffffff, .9);
   shadowLight.position.set(150, 350, 350);
   shadowLight.castShadow = true;
@@ -192,14 +188,12 @@ function createLights() {
   shadowLight.shadow.camera.far = 1000;
   shadowLight.shadow.mapSize.width = 4096;
   shadowLight.shadow.mapSize.height = 4096;
-
   var ch = new THREE.CameraHelper(shadowLight.shadow.camera);
 
   //scene.add(ch);
   scene.add(hemisphereLight);
   scene.add(shadowLight);
   scene.add(ambientLight);
-
 }
 
 function loop(){
@@ -209,7 +203,6 @@ function loop(){
 
   if (game.status=="playing"){
     // Play music
-
     if (!musicPlaying) music.play();
 
     // Add energy coins every 100m;
@@ -229,13 +222,16 @@ function loop(){
       obstaclesHolder.spawnObstacles();
     }
 
+    // if (Math.floor(game.distance)%game.distanceForLandObstaclesSpawn == 0 && Math.floor(game.distance) > game.landObstacleLastSpawn){
+    //   game.landObstacleLastSpawn = Math.floor(game.distance);
+    //   landObstaclesHolder.spawnLandObstacles();
+    // }
+
     if (Math.floor(game.distance)%game.distanceForLevelUpdate == 0 && Math.floor(game.distance) > game.levelLastUpdate){
       game.levelLastUpdate = Math.floor(game.distance);
       game.level++;
-
       game.targetBaseSpeed = game.initSpeed + game.incrementSpeedByLevel*game.level
     }
-
 
     updatePlane();
     updateDistance();
@@ -243,8 +239,8 @@ function loop(){
     game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * 0.02;
     game.speed = game.baseSpeed * game.planeSpeed;
 
-  }else if(game.status=="gameover"){
-     game.speed *= .99;
+  } else if(game.status=="gameover") {
+    game.speed *= .99;
     // airplane.mesh.rotation.z += (-Math.PI/2 - airplane.mesh.rotation.z)*.0002*deltaTime;
     // airplane.mesh.rotation.x += 0.0003*deltaTime;
     game.planeFallSpeed *= 1.05;
@@ -255,7 +251,8 @@ function loop(){
       game.status = "waitingReplay";
     }
   } else if (game.status=="waitingReplay"){
-
+    // Stop music
+    music.pause();
   }
 
   airplane.propeller.rotation.x +=.2 + game.planeSpeed * deltaTime*.005;
@@ -267,10 +264,8 @@ function loop(){
 
   coinsHolder.rotateCoins();
   obstaclesHolder.rotateObstacles();
-
   sky.moveClouds();
   water.moveWaves();
-
   renderer.render(scene, camera);
   requestAnimationFrame(loop);
 }
@@ -294,13 +289,11 @@ function addEnergy(){
   if (game.status == 'gameover') return;
   game.energy += 2;
   game.energy = Math.min(game.energy, 100);
-
   game.score += game.coinValue;
   scoreCounter.innerHTML = 'Score = ' + game.score;
   healthCounter.innerHTML = 'Health = ' + game.energy;
 
   // Play pickup sound
-
   var asd = pickupSound.play();
 }
 
@@ -309,11 +302,9 @@ function removeEnergy(){
 
   game.energy -= game.obstacleValue;
   game.energy = Math.max(0, game.energy);
-
   healthCounter.innerHTML = 'Health = ' + game.energy;
 
   // Play hurt sound
-
   hurtSound.play();
 }
 
@@ -338,7 +329,6 @@ var fieldDistance, energyBar, replayMessage, fieldLevel, levelCircle, scoreCount
 
 function init(event){
   // UI
-
   fieldDistance = document.getElementById("distValue");
   energyBar = document.getElementById("energyBar");
   replayMessage = document.getElementById("replayMessage");
@@ -352,14 +342,12 @@ function init(event){
   replayMessage.style.display = 'block';
   
   createScene();
-
   createLights();
   createPlane();
   createWater();
   createSky();
   createCoins();
   createObstacles();
-  createLandObstacles()
 
   document.addEventListener('mousemove', handleMouseMove, false);
   document.addEventListener('touchmove', handleTouchMove, false);
@@ -367,16 +355,13 @@ function init(event){
   document.addEventListener('touchend', handleTouchEnd, false);
 
   // SOUND EFFECTS
-
   pickupSound = new Audio('assets/pickup.mp3');
   hurtSound = new Audio('assets/explosion.mp3');
   music = new Audio('assets/bgm.mp3');
-
   pickupSound.volume = 0.75;
   hurtSound.volume = 0.5;
   music.volume = 0.25;
   music.loop = true;
-
   loop();
 }
 
