@@ -12,6 +12,7 @@ var colorList = {
 
 // Game variables
 var game;
+var BoostStatus = 0;
 var deltaTime = 0;
 var newTime = new Date().getTime();
 var oldTime = new Date().getTime();
@@ -42,7 +43,7 @@ var HEIGHT, WIDTH,
 
 // SOUND EFFECTS
 
-var pickupSound, hurtSound;
+var pickupSound, hurtSound, boostSound;
 var music, musicPlaying = 0;
 
 // Fungsi untuk reset game
@@ -76,6 +77,7 @@ function resetGame(){
           planeFallSpeed:.001,
           planeMinSpeed:1.2,
           planeMaxSpeed:1.6,
+          planeBoostSpeed:4,
           planeSpeed:0,
           planeCollisionDisplacementX:0,
           planeCollisionSpeedX:0,
@@ -177,8 +179,15 @@ function handleMouseUp(event){
     resetGame();
     hideReplay();
   }
+  else if (game.status == "playing"){
+    if (BoostStatus == 1){
+      BoostStatus = 0;
+    }
+    else if (BoostStatus == 0){
+      BoostStatus = 1;
+    }
+  }
 }
-
 
 function handleTouchEnd(event){
   if (game.status == "waitingReplay"){
@@ -248,14 +257,23 @@ function loop(){
       game.targetBaseSpeed = game.initSpeed + game.incrementSpeedByLevel*game.level
     }
 
-
     updatePlane();
     updateDistance();
     updateEnergy();
     game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * 0.02;
     game.speed = game.baseSpeed * game.planeSpeed;
 
-  }else if(game.status=="gameover"){
+    if (BoostStatus == 1){
+      console.log("Boosting...");
+      boostSound.play()
+      game.speed = game.baseSpeed * game.planeBoostSpeed;
+    }
+    else if (BoostStatus == 0)
+    {
+      boostSound.pause()
+    }
+  }
+  else if(game.status=="gameover"){
      game.speed *= .99;
     // airplane.mesh.rotation.z += (-Math.PI/2 - airplane.mesh.rotation.z)*.0002*deltaTime;
     // airplane.mesh.rotation.x += 0.0003*deltaTime;
@@ -378,15 +396,16 @@ function init(event){
   document.addEventListener('touchend', handleTouchEnd, false);
 
   // SOUND EFFECTS
-
   pickupSound = new Audio('assets/pickup.mp3');
   hurtSound = new Audio('assets/explosion.mp3');
   music = new Audio('assets/bgm.mp3');
+  boostSound = new Audio('assets/boost-extended-ver.mp3');
 
   pickupSound.volume = 0.75;
   hurtSound.volume = 0.5;
   music.volume = 0.25;
   music.loop = true;
+
 
   loop();
 }

@@ -177,4 +177,6 @@ function updatePlane()
   game.planeCollisionDisplacementX += (0-game.planeCollisionDisplacementX)*deltaTime *0.01;
   game.planeCollisionSpeedY += (0-game.planeCollisionSpeedY)*deltaTime * 0.03;
   game.planeCollisionDisplacementY += (0-game.planeCollisionDisplacementY)*deltaTime *0.01;
+  
 }
+
