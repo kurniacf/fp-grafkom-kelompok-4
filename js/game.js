@@ -27,6 +27,8 @@ var ambientLight, hemisphereLight, shadowLight;
 var water;
 var airplane;
 
+//flag heart
+let heart_init = 0;
 // ThreeJs variables
 
 var scene,
@@ -60,7 +62,9 @@ function resetGame(){
 
           distance:0,
           ratioSpeedDistance:50,
-          energy:100,
+          // energy:100,
+          heart:5,
+          heart_point:0,
           ratioSpeedEnergy:3,
 
           level:1,
@@ -109,8 +113,23 @@ function resetGame(){
 
           status : "playing",
          };
-  scoreCounter.innerHTML = 'Score = ' + game.score;
-  healthCounter.innerHTML = 'Health = ' + game.energy;
+  coinsCounter.innerHTML = game.score;
+  
+  // healthCounter.innerHTML = 'Health = '+ game.energy;
+  for(var i=0; i<game.heart; i++){
+    if(!heart_init){
+      var heart_icon = document.createElement('img');
+      heart_icon.src = "./assets/photo/heart_icon.png"
+      heart_icon.setAttribute("alt", "heart");
+      heart_icon.classList.add('heart')
+      heart_icon.classList.add('visible')
+      healthCounter.appendChild(heart_icon)
+    }
+    else{
+      healthCounter.childNodes[i].classList.remove('invisible')
+      healthCounter.childNodes[i].classList.add('visible')
+    }
+  }
 }
 
 // Fungsi untuk menginisialisasi scene
@@ -175,6 +194,7 @@ function handleTouchMove(event) {
 function handleMouseUp(event){
   if (game.status == "waitingReplay"){
     resetGame();
+    // heart_init = 0;
     hideReplay();
   }
 }
@@ -183,6 +203,7 @@ function handleMouseUp(event){
 function handleTouchEnd(event){
   if (game.status == "waitingReplay"){
     resetGame();
+    // heart_init = 0;
     hideReplay();
   }
 }
@@ -218,7 +239,6 @@ function loop(){
   newTime = new Date().getTime();
   deltaTime = newTime-oldTime;
   oldTime = newTime;
-
   if (game.status=="playing"){
     // Play music
 
@@ -260,9 +280,9 @@ function loop(){
     // airplane.mesh.rotation.z += (-Math.PI/2 - airplane.mesh.rotation.z)*.0002*deltaTime;
     // airplane.mesh.rotation.x += 0.0003*deltaTime;
     game.planeFallSpeed *= 1.05;
-    airplane.mesh.position.y -= game.planeFallSpeed*deltaTime;
+    airplane.rocketGroup.position.y -= game.planeFallSpeed*deltaTime;
 
-    if (airplane.mesh.position.y <-200){
+    if (airplane.rocketGroup.position.y <-200){
       showReplay();
       game.status = "waitingReplay";
     }
@@ -270,7 +290,7 @@ function loop(){
 
   }
 
-  airplane.propeller.rotation.x +=.2 + game.planeSpeed * deltaTime*.005;
+  // airplane.propeller.rotation.x +=.2 + game.planeSpeed * deltaTime*.005;
   water.mesh.rotation.z += game.speed*deltaTime;//*game.seaRotationSpeed;
 
   if ( water.mesh.rotation.z > 2*Math.PI)  water.mesh.rotation.z -= 2*Math.PI;
@@ -295,21 +315,42 @@ function updateDistance(){
 var blinkEnergy=false;
 
 function updateEnergy(){
-  game.energy = Math.max(0, game.energy);
+  // game.energy = Math.max(0, game.energy);
+  game.heart = Math.max(0, game.heart);
 
-  if (game.energy <1){
+  // if (game.energy <1){
+  //   game.status = "gameover";
+  // }
+  if (game.heart <1){
     game.status = "gameover";
   }
 }
 
 function addEnergy(){
   if (game.status == 'gameover') return;
-  game.energy += 2;
-  game.energy = Math.min(game.energy, 100);
+  // game.energy += 2;
+  // game.energy = Math.min(game.energy, 100);
+
+  game.heart = Math.min(game.heart, 6);
 
   game.score += game.coinValue;
-  scoreCounter.innerHTML = 'Score = ' + game.score;
-  healthCounter.innerHTML = 'Health = ' + game.energy;
+  game.heart_point += 2;
+  coinsCounter.innerHTML =  game.score;
+  // healthCounter.innerHTML = 'Health = ' + game.energy;
+  let invisible = healthCounter.getElementsByClassName('invisible')
+  if(game.heart_point >=10 && game.heart < 5){
+    // var heart_icon = document.createElement('img');
+    // heart_icon.src = "./assets/photo/heart_icon.png"
+    // heart_icon.setAttribute("width", "50");
+    // heart_icon.setAttribute("height", "50");
+    // heart_icon.setAttribute("alt", "heart");
+    // heart_icon.classList.add('heart');
+    // healthCounter.appendChild(heart_icon);
+    healthCounter.childNodes[healthCounter.childNodes.length - invisible.length].classList.add('visible')
+    healthCounter.childNodes[healthCounter.childNodes.length - invisible.length].classList.remove('invisible')
+    game.heart +=1;
+    game.heart_point = 0;
+  }
 
   // Play pickup sound
 
@@ -318,12 +359,18 @@ function addEnergy(){
 
 function removeEnergy(){
   if (game.status == 'gameover') return;
+  game.heart -= 1;
+  game.heart = Math.max(0, game.heart)
 
-  game.energy -= game.obstacleValue;
-  game.energy = Math.max(0, game.energy);
+  // if(healthCounter.children.length > 0)
+  // healthCounter.removeChild(healthCounter.childNodes[0])
 
-  healthCounter.innerHTML = 'Health = ' + game.energy;
+  let visible = healthCounter.getElementsByClassName('visible')
 
+  if(visible.length){
+    healthCounter.childNodes[visible.length-1].classList.add('invisible')
+    healthCounter.childNodes[visible.length-1].classList.remove('visible')
+  }
   // Play hurt sound
 
   hurtSound.play();
@@ -346,7 +393,7 @@ function normalize(v,vmin,vmax,tmin, tmax){
   return tv;
 }
 
-var fieldDistance, energyBar, replayMessage, fieldLevel, levelCircle, scoreCounter, healthCounter;
+var fieldDistance, energyBar, replayMessage, fieldLevel, levelCircle, coinsCounter, healthCounter;
 
 function init(event){
   // UI
@@ -356,10 +403,11 @@ function init(event){
   replayMessage = document.getElementById("replayMessage");
   fieldLevel = document.getElementById("levelValue");
   levelCircle = document.getElementById("levelCircleStroke");
-  scoreCounter = document.getElementById('scoreCounter');
+  coinsCounter = document.getElementById('coinsValue');
   healthCounter = document.getElementById('healthCounter');
 
   resetGame();
+  heart_init = 1;
   game.status = 'waitingReplay';
   replayMessage.style.display = 'block';
   

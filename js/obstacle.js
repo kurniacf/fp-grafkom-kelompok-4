@@ -62,7 +62,7 @@ ObstaclesHolder.prototype.rotateObstacles = function(){
     obstacle.mesh.rotation.y += Math.random()*.1;
 
     //var globalObstaclePosition =  obstacle.mesh.localToWorld(new THREE.Vector3());
-    var diffPos = airplane.mesh.position.clone().sub(obstacle.mesh.position.clone());
+    var diffPos = airplane.rocketGroup.position.clone().sub(obstacle.mesh.position.clone());
     var d = diffPos.length();
     if (d<game.obstacleDistanceTolerance){
       // particlesHolder.spawnParticles(obstacle.mesh.position.clone(), 15, colorList.red, 3);
