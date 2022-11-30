@@ -1,8 +1,8 @@
 // Fungsi untuk membuat objek koin baru
 Coin = function(){
-  var geom = new THREE.TetrahedronGeometry(5,0);
+  let geom = new THREE.TetrahedronGeometry(5,0);
 
-  var mat = new THREE.MeshPhongMaterial({
+  let mat = new THREE.MeshPhongMaterial({
     color:colorList.blue,
     shininess:0,
     specular:0xffffff,
@@ -23,7 +23,7 @@ CoinsHolder = function (coinCount){
   this.coinsInUse = [];
   this.coinsPool = [];
 
-  for (var i = 0; i < coinCount; i++){
+  for (let i = 0; i < coinCount; i++){
     this.coinsPool.push(new Coin());
   }
 }
@@ -36,12 +36,12 @@ function createCoins()
 // Fungsi untuk membuat koin - koin baru pada game secara acak
 CoinsHolder.prototype.spawnCoins = function()
 {
-  var coinCount = 1 + Math.floor(Math.random()*10);
-  var d = game.waterRadius + game.planeDefaultHeight + (-1 + Math.random() * 2) * (game.planeAmpHeight-20);
-  var amplitude = 10 + Math.round(Math.random()*10);
+  let coinCount = 1 + Math.floor(Math.random()*10);
+  let d = game.waterRadius + game.planeDefaultHeight + (-1 + Math.random() * 2) * (game.planeAmpHeight-20);
+  let amplitude = 10 + Math.round(Math.random()*10);
 
-  for (var i=0; i<coinCount; i++){
-    var coin;
+  for (let i=0; i<coinCount; i++){
+    let coin;
 
     if (this.coinsPool.length)
     {
@@ -64,9 +64,9 @@ CoinsHolder.prototype.spawnCoins = function()
 // Fungsi untuk memutar objek - objek koin
 CoinsHolder.prototype.rotateCoins = function()
 {
-  for (var i = 0; i < this.coinsInUse.length; i++)
+  for (let i = 0; i < this.coinsInUse.length; i++)
   {
-    var coin = this.coinsInUse[i];
+    let coin = this.coinsInUse[i];
     if (coin.exploding) continue; // Jika koin sudah diambil, jangan diupdate
 
     // Memutar objek koin
