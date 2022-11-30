@@ -1,5 +1,5 @@
 // Game colors
-var colorList = {
+let colorList = {
     red:0xf25346,
     white:0xd8d0d1,
     brown:0x59332e,
@@ -7,108 +7,99 @@ var colorList = {
     pink:0xF5986E,
     yellow:0xf4ce93,
     blue:0x68c3c0,
-
 };
 
 // Game variables
-var game;
-var deltaTime = 0;
-var newTime = new Date().getTime();
-var oldTime = new Date().getTime();
-var obstaclesPool = [];
-var particlesPool = [];
-var particlesInUse = [];
+let game;
+let deltaTime = 0;
+let newTime = new Date().getTime();
+let oldTime = new Date().getTime();
+let obstaclesPool = [];
+let particlesPool = [];
+let particlesInUse = [];
 
 // Lights
 
-var ambientLight, hemisphereLight, shadowLight;
+let ambientLight, hemisphereLight, shadowLight;
 
 // Objects
-var water;
-var airplane;
+let water;
+let airplane;
 
 // ThreeJs variables
-
-var scene,
-    camera, fieldOfView, aspectRatio, nearPlane, farPlane,
-    renderer,
-    container,
-    controls;
+let scene;
+let camera; 
+let fieldOfView; 
+let aspectRatio; 
+let nearPlane; 
+let farPlane;
+let renderer;
+let container;
+let controls;
 
 //SCREEN & MOUSE VARIABLES
-
-var HEIGHT, WIDTH,
-    mousePos = { x: 0, y: 0 };
+let HEIGHT, WIDTH;
+let mousePos = { x: 0, y: 0 };
 
 // SOUND EFFECTS
-
-var pickupSound, hurtSound;
-var music, musicPlaying = 0;
+let pickupSound, hurtSound;
+let music, musicPlaying = 0;
 
 // Fungsi untuk reset game
 function resetGame(){
-  game = {speed:0,
-          initSpeed:.00035,
-          baseSpeed:.00035,
-          targetBaseSpeed:.00035,
-          incrementSpeedByTime:0,//.0000025,
-          incrementSpeedByLevel:.000005,
-          distanceForSpeedUpdate:100,
-          speedLastUpdate:0,
-
-          score:0,
-
-          distance:0,
-          ratioSpeedDistance:50,
-          energy:100,
-          ratioSpeedEnergy:3,
-
-          level:1,
-          levelLastUpdate:0,
-          distanceForLevelUpdate:1000,
-
-          planeDefaultHeight:100,
-          planeAmpHeight:80,
-          planeAmpWidth:75,
-          planeMoveSensivity:0.005,
-          planeRotXSensivity:0.0008,
-          planeRotZSensivity:0.0004,
-          planeFallSpeed:.001,
-          planeMinSpeed:1.2,
-          planeMaxSpeed:1.6,
-          planeSpeed:0,
-          planeCollisionDisplacementX:0,
-          planeCollisionSpeedX:0,
-
-          planeCollisionDisplacementY:0,
-          planeCollisionSpeedY:0,
-
-          waterRadius:600,
-          waterLength:800,
-          //seaRotationSpeed:0.006,
-          wavesMinAmp : 5,
-          wavesMaxAmp : 20,
-          wavesMinSpeed : 0.001,
-          wavesMaxSpeed : 0.003,
-
-          cameraFarPos:500,
-          cameraNearPos:150,
-          cameraSensivity:0.002,
-
-          coinDistanceTolerance:15,
-          coinValue:10,
-          coinsSpeed:.5,
-          coinLastSpawn:0,
-          distanceForCoinsSpawn:100,
-
-          obstacleDistanceTolerance:10,
-          obstacleValue:10,
-          obstaclesSpeed:.6,
-          obstacleLastSpawn:0,
-          distanceForObstaclesSpawn:50,
-
-          status : "playing",
-         };
+  game = {
+    speed                         :0,
+    initSpeed                     :.00035,
+    baseSpeed                     :.00035,
+    targetBaseSpeed               :.00035,
+    incrementSpeedByTime          :0,//.0000025,
+    incrementSpeedByLevel         :.000005,
+    distanceForSpeedUpdate        :100,
+    speedLastUpdate               :0,
+    score                         :0,
+    distance                      :0,
+    ratioSpeedDistance            :50,
+    energy                        :100,
+    ratioSpeedEnergy              :3,
+    level                         :1,
+    levelLastUpdate               :0,
+    distanceForLevelUpdate        :1000,
+    planeDefaultHeight            :100,
+    planeAmpHeight                :80,
+    planeAmpWidth                 :75,
+    planeMoveSensivity            :0.005,
+    planeRotXSensivity            :0.0008,
+    planeRotZSensivity            :0.0004,
+    planeFallSpeed                :.001,
+    planeMinSpeed                 :1.2,
+    planeMaxSpeed                 :1.6,
+    planeSpeed                    :0,
+    planeCollisionDisplacementX   :0,
+    planeCollisionSpeedX          :0,
+    planeCollisionDisplacementY   :0,
+    planeCollisionSpeedY          :0,
+    waterRadius                   :600,
+    waterLength                   :800,
+    //seaRotationSpeed:0.006,
+    wavesMinAmp                   :5,
+    wavesMaxAmp                   :20,
+    wavesMinSpeed                 :0.001,
+    wavesMaxSpeed                 :0.003,
+    cameraFarPos                  :500,
+    cameraNearPos                 :150,
+    cameraSensivity               :0.002,
+    coinDistanceTolerance         :15,
+    coinValue                     :10,
+    coinsSpeed                    :.5,
+    coinLastSpawn                 :0,
+    distanceForCoinsSpawn         :100,
+    obstacleDistanceTolerance     :10,
+    obstacleValue                 :10,
+    obstaclesSpeed                :.6,
+    obstacleLastSpawn             :0,
+    distanceForObstaclesSpawn     :50,
+    status                        : "playing",
+  };
   scoreCounter.innerHTML = 'Score = ' + game.score;
   healthCounter.innerHTML = 'Health = ' + game.energy;
 }
@@ -129,7 +120,7 @@ function createScene() {
     aspectRatio,
     nearPlane,
     farPlane
-    );
+  );
 
   scene.fog = new THREE.Fog(0x855988, 100,950);
 
@@ -141,12 +132,9 @@ function createScene() {
   // Renderer
   renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
   renderer.setSize(WIDTH, HEIGHT);
-
   renderer.shadowMap.enabled = true;
-
   container = document.getElementById('world');
   container.appendChild(renderer.domElement);
-
   window.addEventListener('resize', handleWindowResize, false);
 }
 
@@ -179,7 +167,6 @@ function handleMouseUp(event){
   }
 }
 
-
 function handleTouchEnd(event){
   if (game.status == "waitingReplay"){
     resetGame();
@@ -188,11 +175,8 @@ function handleTouchEnd(event){
 }
 
 function createLights() {
-
   hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, .9)
-
   ambientLight = new THREE.AmbientLight(0xdc8874, .5);
-
   shadowLight = new THREE.DirectionalLight(0xffffff, .9);
   shadowLight.position.set(150, 350, 350);
   shadowLight.castShadow = true;
@@ -204,14 +188,12 @@ function createLights() {
   shadowLight.shadow.camera.far = 1000;
   shadowLight.shadow.mapSize.width = 4096;
   shadowLight.shadow.mapSize.height = 4096;
-
   var ch = new THREE.CameraHelper(shadowLight.shadow.camera);
 
   //scene.add(ch);
   scene.add(hemisphereLight);
   scene.add(shadowLight);
   scene.add(ambientLight);
-
 }
 
 function loop(){
@@ -221,7 +203,6 @@ function loop(){
 
   if (game.status=="playing"){
     // Play music
-
     if (!musicPlaying) music.play();
 
     // Add energy coins every 100m;
@@ -241,13 +222,16 @@ function loop(){
       obstaclesHolder.spawnObstacles();
     }
 
+    // if (Math.floor(game.distance)%game.distanceForLandObstaclesSpawn == 0 && Math.floor(game.distance) > game.landObstacleLastSpawn){
+    //   game.landObstacleLastSpawn = Math.floor(game.distance);
+    //   landObstaclesHolder.spawnLandObstacles();
+    // }
+
     if (Math.floor(game.distance)%game.distanceForLevelUpdate == 0 && Math.floor(game.distance) > game.levelLastUpdate){
       game.levelLastUpdate = Math.floor(game.distance);
       game.level++;
-
       game.targetBaseSpeed = game.initSpeed + game.incrementSpeedByLevel*game.level
     }
-
 
     updatePlane();
     updateDistance();
@@ -255,8 +239,8 @@ function loop(){
     game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * 0.02;
     game.speed = game.baseSpeed * game.planeSpeed;
 
-  }else if(game.status=="gameover"){
-     game.speed *= .99;
+  } else if(game.status=="gameover") {
+    game.speed *= .99;
     // airplane.mesh.rotation.z += (-Math.PI/2 - airplane.mesh.rotation.z)*.0002*deltaTime;
     // airplane.mesh.rotation.x += 0.0003*deltaTime;
     game.planeFallSpeed *= 1.05;
@@ -267,7 +251,8 @@ function loop(){
       game.status = "waitingReplay";
     }
   } else if (game.status=="waitingReplay"){
-
+    // Stop music
+    music.pause();
   }
 
   airplane.propeller.rotation.x +=.2 + game.planeSpeed * deltaTime*.005;
@@ -279,10 +264,8 @@ function loop(){
 
   coinsHolder.rotateCoins();
   obstaclesHolder.rotateObstacles();
-
   sky.moveClouds();
   water.moveWaves();
-
   renderer.render(scene, camera);
   requestAnimationFrame(loop);
 }
@@ -306,13 +289,11 @@ function addEnergy(){
   if (game.status == 'gameover') return;
   game.energy += 2;
   game.energy = Math.min(game.energy, 100);
-
   game.score += game.coinValue;
   scoreCounter.innerHTML = 'Score = ' + game.score;
   healthCounter.innerHTML = 'Health = ' + game.energy;
 
   // Play pickup sound
-
   var asd = pickupSound.play();
 }
 
@@ -321,11 +302,9 @@ function removeEnergy(){
 
   game.energy -= game.obstacleValue;
   game.energy = Math.max(0, game.energy);
-
   healthCounter.innerHTML = 'Health = ' + game.energy;
 
   // Play hurt sound
-
   hurtSound.play();
 }
 
@@ -350,7 +329,6 @@ var fieldDistance, energyBar, replayMessage, fieldLevel, levelCircle, scoreCount
 
 function init(event){
   // UI
-
   fieldDistance = document.getElementById("distValue");
   energyBar = document.getElementById("energyBar");
   replayMessage = document.getElementById("replayMessage");
@@ -364,7 +342,6 @@ function init(event){
   replayMessage.style.display = 'block';
   
   createScene();
-
   createLights();
   createPlane();
   createWater();
@@ -378,16 +355,13 @@ function init(event){
   document.addEventListener('touchend', handleTouchEnd, false);
 
   // SOUND EFFECTS
-
   pickupSound = new Audio('assets/pickup.mp3');
   hurtSound = new Audio('assets/explosion.mp3');
   music = new Audio('assets/bgm.mp3');
-
   pickupSound.volume = 0.75;
   hurtSound.volume = 0.5;
   music.volume = 0.25;
   music.loop = true;
-
   loop();
 }
 
