@@ -15,6 +15,7 @@ let deltaTime = 0;
 let newTime = new Date().getTime();
 let oldTime = new Date().getTime();
 let obstaclesPool = [];
+let landObstaclesPool = [];
 let particlesPool = [];
 let particlesInUse = [];
 
@@ -49,70 +50,67 @@ let music, musicPlaying = 0;
 
 // Fungsi untuk reset game
 function resetGame(){
-  game = {speed:0,
-          initSpeed:.00035,
-          baseSpeed:.00035,
-          targetBaseSpeed:.00035,
-          incrementSpeedByTime:0,//.0000025,
-          incrementSpeedByLevel:.000005,
-          distanceForSpeedUpdate:100,
-          speedLastUpdate:0,
-
-          score:0,
-
-          distance:0,
-          ratioSpeedDistance:50,
-          // energy:100,
-          heart:5,
-          heart_point:0,
-          ratioSpeedEnergy:3,
-
-          level:1,
-          levelLastUpdate:0,
-          distanceForLevelUpdate:1000,
-
-          planeDefaultHeight:100,
-          planeAmpHeight:80,
-          planeAmpWidth:75,
-          planeMoveSensivity:0.005,
-          planeRotXSensivity:0.0008,
-          planeRotZSensivity:0.0004,
-          planeFallSpeed:.001,
-          planeMinSpeed:1.2,
-          planeMaxSpeed:1.6,
-          planeSpeed:0,
-          planeCollisionDisplacementX:0,
-          planeCollisionSpeedX:0,
-
-          planeCollisionDisplacementY:0,
-          planeCollisionSpeedY:0,
-
-          waterRadius:600,
-          waterLength:800,
-          //seaRotationSpeed:0.006,
-          wavesMinAmp : 5,
-          wavesMaxAmp : 20,
-          wavesMinSpeed : 0.001,
-          wavesMaxSpeed : 0.003,
-
-          cameraFarPos:500,
-          cameraNearPos:150,
-          cameraSensivity:0.002,
-
-          coinDistanceTolerance:15,
-          coinValue:10,
-          coinsSpeed:.5,
-          coinLastSpawn:0,
-          distanceForCoinsSpawn:100,
-
-          obstacleDistanceTolerance:10,
-          obstacleValue:10,
-          obstaclesSpeed:.6,
-          obstacleLastSpawn:0,
-          distanceForObstaclesSpawn:50,
-
-          status : "playing",
-         };
+  game = {
+    speed                         :0,
+    initSpeed                     :.00035,
+    baseSpeed                     :.00035,
+    targetBaseSpeed               :.00035,
+    incrementSpeedByTime          :0,//.0000025,
+    incrementSpeedByLevel         :.000005,
+    distanceForSpeedUpdate        :100,
+    speedLastUpdate               :0,
+    score                         :0,
+    distance                      :0,
+    ratioSpeedDistance            :50,
+    energy                        :100,
+    ratioSpeedEnergy              :3,
+    // energy:100,
+    heart:5,
+    heart_point:0,
+    level                         :1,
+    levelLastUpdate               :0,
+    distanceForLevelUpdate        :1000,
+    planeDefaultHeight            :100,
+    planeAmpHeight                :80,
+    planeAmpWidth                 :75,
+    planeMoveSensivity            :0.005,
+    planeRotXSensivity            :0.0008,
+    planeRotZSensivity            :0.0004,
+    planeFallSpeed                :.001,
+    planeMinSpeed                 :1.2,
+    planeMaxSpeed                 :1.6,
+    planeSpeed                    :0,
+    planeCollisionDisplacementX   :0,
+    planeCollisionSpeedX          :0,
+    planeCollisionDisplacementY   :0,
+    planeCollisionSpeedY          :0,
+    waterRadius                   :600,
+    waterLength                   :800,
+    //seaRotationSpeed:0.006,
+    wavesMinAmp                   :5,
+    wavesMaxAmp                   :20,
+    wavesMinSpeed                 :0.001,
+    wavesMaxSpeed                 :0.003,
+    cameraFarPos                  :500,
+    cameraNearPos                 :150,
+    cameraSensivity               :0.002,
+    coinDistanceTolerance         :15,
+    coinValue                     :10,
+    coinsSpeed                    :.5,
+    coinLastSpawn                 :0,
+    distanceForCoinsSpawn         :100,
+    obstacleDistanceTolerance     :10,
+    obstacleValue                 :10,
+    obstaclesSpeed                :.6,
+    obstacleLastSpawn             :0,
+    distanceForObstaclesSpawn     :50,
+    status                        : "playing",
+    landObstacleDistanceTolerance :20,
+    landObstacleValue             :10,
+    landObstaclesSpeed            :.1,
+    landObstacleLastSpawn         :0,
+    // distanceForLandObstaclesSpawn :50
+  };
   coinsCounter.innerHTML = game.score;
   
   // healthCounter.innerHTML = 'Health = '+ game.energy;
@@ -245,11 +243,17 @@ function loop(){
       game.targetBaseSpeed += game.incrementSpeedByTime*deltaTime;
     }
 
-
     if (Math.floor(game.distance)%game.distanceForObstaclesSpawn == 0 && Math.floor(game.distance) > game.obstacleLastSpawn){
       game.obstacleLastSpawn = Math.floor(game.distance);
+      game.landObstacleLastSpawn = Math.floor(game.distance);
       obstaclesHolder.spawnObstacles();
+      landObstaclesHolder.spawnObstacles();
     }
+
+    // if (Math.floor(game.distance)%game.distanceForEnemiesSpawn == 0 && Math.floor(game.distance) > game.landObstacleLastSpawn){
+    //   game.landObstacleLastSpawn = Math.floor(game.distance);
+    //   landObstaclesHolder.spawnObstacles();
+    // }
 
     // if (Math.floor(game.distance)%game.distanceForLandObstaclesSpawn == 0 && Math.floor(game.distance) > game.landObstacleLastSpawn){
     //   game.landObstacleLastSpawn = Math.floor(game.distance);
@@ -293,6 +297,7 @@ function loop(){
 
   coinsHolder.rotateCoins();
   obstaclesHolder.rotateObstacles();
+  landObstaclesHolder.rotateObstacles();
   sky.moveClouds();
   water.moveWaves();
   renderer.render(scene, camera);
@@ -407,6 +412,7 @@ function init(event){
   createSky();
   createCoins();
   createObstacles();
+  createLandObstacles();
 
   document.addEventListener('mousemove', handleMouseMove, false);
   document.addEventListener('touchmove', handleTouchMove, false);
