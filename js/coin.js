@@ -1,10 +1,3 @@
-// Fungsi untuk membuat koin pada game
-function createCoins()
-{
-  coinsHolder = new CoinsHolder(20);
-  scene.add(coinsHolder.mesh)
-}
-
 // Fungsi untuk membuat objek koin baru
 Coin = function(){
   let geom = new THREE.TetrahedronGeometry(5,0);
@@ -22,7 +15,6 @@ Coin = function(){
   this.angle = 0;
   this.dist = 0;
 }
-
 // Fungsi untuk membuat CoinsHolder untuk menyimpan objek - objek koin
 // yang sudah dibuat
 CoinsHolder = function (coinCount){
@@ -35,7 +27,12 @@ CoinsHolder = function (coinCount){
     this.coinsPool.push(new Coin());
   }
 }
-
+// Fungsi untuk membuat koin pada game
+function createCoins()
+{
+  coinsHolder = new CoinsHolder(20);
+  scene.add(coinsHolder.mesh)
+}
 // Fungsi untuk membuat koin - koin baru pada game secara acak
 CoinsHolder.prototype.spawnCoins = function()
 {
@@ -83,8 +80,8 @@ CoinsHolder.prototype.rotateCoins = function()
     coin.mesh.rotation.y += Math.random()*.1;
 
     // Mengecek jika koin diambil oleh player
-    let diffPos = airplane.mesh.position.clone().sub(coin.mesh.position.clone());
-    let d = diffPos.length();
+    var diffPos = airplane.rocketGroup.position.clone().sub(coin.mesh.position.clone());
+    var d = diffPos.length();
 
     if (d < game.coinDistanceTolerance) // Jika koin ditabrak oleh player
     {
