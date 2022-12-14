@@ -11,6 +11,7 @@ let colorList = {
 
 // Game variables
 let game;
+var BoostStatus = 0;
 let is3D = false;
 let deltaTime = 0;
 let newTime = new Date().getTime();
@@ -46,7 +47,7 @@ let HEIGHT, WIDTH;
 let mousePos = { x: 0, y: 0 };
 
 // SOUND EFFECTS
-let pickupSound, hurtSound;
+let pickupSound, hurtSound, boostSound;
 let music,
   musicPlaying = 0;
 
@@ -80,7 +81,8 @@ function resetGame(){
     planeRotZSensivity            :0.0004,
     planeFallSpeed                :.001,
     planeMinSpeed                 :1.2,
-    planeMaxSpeed                 :1.6,
+    planeMaxSpeed                 :4,
+    planeBoostSpeed               :1.6,
     planeSpeed                    :0,
     planeCollisionDisplacementX   :0,
     planeCollisionSpeedX          :0,
@@ -190,6 +192,22 @@ function handleMouseUp(event) {
     console.log(is3D);
     if (is3D) camera.position.set(-200, 100, 20);
   }
+  else if (game.status == "playing"){
+    if (BoostStatus == 1){
+      BoostStatus = 0;
+    }
+    else if (BoostStatus == 0){
+      BoostStatus = 1;
+    }
+  }
+  else if (game.status == "playing"){
+    if (BoostStatus == 1){
+      BoostStatus = 0;
+    }
+    else if (BoostStatus == 0){
+      BoostStatus = 1;
+    }
+  }
 }
 
 function handleTouchEnd(event) {
@@ -242,7 +260,7 @@ function createLights() {
   scene.add(shadowLight);
   scene.add(ambientLight);
 }
-
+/*
 let save;
 function loop() {
   newTime = new Date().getTime();
@@ -254,9 +272,9 @@ function loop() {
     if (is3D) {
       camera.lookAt(
         new THREE.Vector3(
-          airplane.rocketGroup.position.x,
-          airplane.rocketGroup.position.y,
-          airplane.rocketGroup.position.z
+          airplane.mesh.position.x,
+          airplane.mesh.position.y,
+          airplane.mesh.position.z
         )
       );
     }
@@ -342,6 +360,124 @@ function loop() {
   renderer.render(scene, camera);
   requestAnimationFrame(loop);
 }
+
+*/
+let save;
+function loop()
+{
+  newTime = new Date().getTime();
+  deltaTime = newTime - oldTime;
+  oldTime = newTime;
+
+  
+  if (game.status=="playing"){
+    // Play music
+    if (!musicPlaying) music.play();
+    if (is3D) {
+      camera.lookAt(
+        new THREE.Vector3(
+          airplane.rocketGroup.position.x,
+          airplane.rocketGroup.position.y,
+          airplane.rocketGroup.position.z
+        )
+      );
+    }
+    // Add energy coins every 100m;
+    if (
+      Math.floor(game.distance) % game.distanceForCoinsSpawn == 0 &&
+      Math.floor(game.distance) > game.coinLastSpawn
+    ) {
+      game.coinLastSpawn = Math.floor(game.distance);
+      coinsHolder.spawnCoins();
+    }
+
+    if (
+      Math.floor(game.distance) % game.distanceForSpeedUpdate == 0 &&
+      Math.floor(game.distance) > game.speedLastUpdate
+    ) {
+      game.speedLastUpdate = Math.floor(game.distance);
+      game.targetBaseSpeed += game.incrementSpeedByTime * deltaTime;
+    }
+
+    if (
+      Math.floor(game.distance) % game.distanceForObstaclesSpawn == 0 &&
+      Math.floor(game.distance) > game.obstacleLastSpawn
+    ) {
+      game.obstacleLastSpawn = Math.floor(game.distance);
+      game.landObstacleLastSpawn = Math.floor(game.distance);
+      obstaclesHolder.spawnObstacles();
+      landObstaclesHolder.spawnObstacles();
+    }
+
+    // if (Math.floor(game.distance)%game.distanceForEnemiesSpawn == 0 && Math.floor(game.distance) > game.landObstacleLastSpawn){
+    //   game.landObstacleLastSpawn = Math.floor(game.distance);
+    //   landObstaclesHolder.spawnObstacles();
+    // }
+
+    // if (Math.floor(game.distance)%game.distanceForLandObstaclesSpawn == 0 && Math.floor(game.distance) > game.landObstacleLastSpawn){
+    //   game.landObstacleLastSpawn = Math.floor(game.distance);
+    //   landObstaclesHolder.spawnLandObstacles();
+    // }
+
+    if (
+      Math.floor(game.distance) % game.distanceForLevelUpdate == 0 &&
+      Math.floor(game.distance) > game.levelLastUpdate
+    ) {
+      game.levelLastUpdate = Math.floor(game.distance);
+      game.level++;
+      game.targetBaseSpeed = game.initSpeed + game.incrementSpeedByLevel * game.level;
+    }
+
+    updatePlane();
+    updateDistance();
+    updateEnergy();
+    game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * 0.02;
+    game.speed = game.baseSpeed * game.planeSpeed;
+
+      if (BoostStatus == 1){
+        console.log("Boosting...");
+        boostSound.play()
+        game.speed = game.baseSpeed * game.planeBoostSpeed;
+      }
+      else if (BoostStatus == 0)
+      {
+        boostSound.pause()
+      }
+  }
+  else if (game.status == "gameover") 
+  {
+      game.speed *= 0.99;
+      // airplane.mesh.rotation.z += (-Math.PI/2 - airplane.mesh.rotation.z)*.0002*deltaTime;
+      // airplane.mesh.rotation.x += 0.0003*deltaTime;
+      game.planeFallSpeed *= 1.05;
+      airplane.rocketGroup.position.y -= game.planeFallSpeed*deltaTime;
+
+      if (airplane.rocketGroup.position.y <-200){
+        showReplay();
+        game.status = "waitingReplay";
+      }
+  } 
+  else if (game.status == "waitingReplay") 
+  {
+    // Stop music
+    music.pause();
+  }
+  // airplane.propeller.rotation.x +=.2 + game.planeSpeed * deltaTime*.005;
+  water.mesh.rotation.z += game.speed*deltaTime;//*game.seaRotationSpeed;
+
+  if (water.mesh.rotation.z > 2 * Math.PI) water.mesh.rotation.z -= 2 * Math.PI;
+
+  ambientLight.intensity += (0.5 - ambientLight.intensity) * deltaTime * 0.005;
+
+  coinsHolder.rotateCoins();
+  obstaclesHolder.rotateObstacles();
+  landObstaclesHolder.rotateObstacles();
+  sky.moveClouds();
+  water.moveWaves();
+  renderer.render(scene, camera);
+  requestAnimationFrame(loop);
+}
+
 
 function updateDistance() {
   game.distance += game.speed * deltaTime * game.ratioSpeedDistance;
@@ -460,9 +596,11 @@ function init(event) {
   document.addEventListener("keydown", handleKeyDown, false);
 
   // SOUND EFFECTS
-  pickupSound = new Audio("assets/pickup.mp3");
-  hurtSound = new Audio("assets/explosion.mp3");
-  music = new Audio("assets/bgm.mp3");
+  pickupSound = new Audio('assets/pickup.mp3');
+  hurtSound = new Audio('assets/explosion.mp3');
+  music = new Audio('assets/bgm.mp3');
+  boostSound = new Audio('assets/boost-extended-ver.mp3');
+
   pickupSound.volume = 0.75;
   hurtSound.volume = 0.5;
   music.volume = 0.25;
