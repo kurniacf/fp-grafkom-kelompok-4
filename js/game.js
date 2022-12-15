@@ -117,7 +117,6 @@ function resetGame(){
   };
   coinsCounter.innerHTML = game.score;
   
-  // healthCounter.innerHTML = 'Health = '+ game.energy;
   for(var i=0; i<game.heart; i++){
     if(!heart_init){
       var heart_icon = document.createElement('img');
@@ -126,18 +125,17 @@ function resetGame(){
       heart_icon.classList.add('heart')
       heart_icon.classList.add('visible')
       healthCounter.appendChild(heart_icon)
-    }
-    else{
+    } else{
       healthCounter.childNodes[i].classList.remove('invisible')
       healthCounter.childNodes[i].classList.add('visible')
     }
   }
 }
+
 // Fungsi untuk menginisialisasi scene
 function createScene() {
   HEIGHT = window.innerHeight;
   WIDTH = window.innerWidth;
-
   scene = new THREE.Scene();
 
   aspectRatio = WIDTH / HEIGHT;
@@ -145,7 +143,6 @@ function createScene() {
   nearPlane = 0.1;
   farPlane = 10000;
   camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio, nearPlane, farPlane);
-
   scene.fog = new THREE.Fog(0x855988, 100, 950);
 
   // Setting posisi kamera
@@ -187,24 +184,19 @@ function handleTouchMove(event) {
 function handleMouseUp(event) {
   if (game.status == "waitingReplay") {
     resetGame();
-    // heart_init = 0;
     hideReplay();
     console.log(is3D);
     if (is3D) camera.position.set(-200, 100, 20);
-  }
-  else if (game.status == "playing"){
+  } else if (game.status == "playing") {
     if (BoostStatus == 1){
       BoostStatus = 0;
-    }
-    else if (BoostStatus == 0){
+    } else if (BoostStatus == 0) {
       BoostStatus = 1;
     }
-  }
-  else if (game.status == "playing"){
+  } else if (game.status == "playing"){
     if (BoostStatus == 1){
       BoostStatus = 0;
-    }
-    else if (BoostStatus == 0){
+    } else if (BoostStatus == 0){
       BoostStatus = 1;
     }
   }
@@ -213,7 +205,6 @@ function handleMouseUp(event) {
 function handleTouchEnd(event) {
   if (game.status == "waitingReplay") {
     resetGame();
-    // heart_init = 0;
     hideReplay();
   }
 }
@@ -255,121 +246,17 @@ function createLights() {
   shadowLight.shadow.mapSize.height = 4096;
   var ch = new THREE.CameraHelper(shadowLight.shadow.camera);
 
-  //scene.add(ch);
   scene.add(hemisphereLight);
   scene.add(shadowLight);
   scene.add(ambientLight);
 }
-/*
+
 let save;
 function loop() {
   newTime = new Date().getTime();
   deltaTime = newTime - oldTime;
   oldTime = newTime;
-  if (game.status=="playing"){
-    // Play music
-    if (!musicPlaying) music.play();
-    if (is3D) {
-      camera.lookAt(
-        new THREE.Vector3(
-          airplane.mesh.position.x,
-          airplane.mesh.position.y,
-          airplane.mesh.position.z
-        )
-      );
-    }
-    // Add energy coins every 100m;
-    if (
-      Math.floor(game.distance) % game.distanceForCoinsSpawn == 0 &&
-      Math.floor(game.distance) > game.coinLastSpawn
-    ) {
-      game.coinLastSpawn = Math.floor(game.distance);
-      coinsHolder.spawnCoins();
-    }
 
-    if (
-      Math.floor(game.distance) % game.distanceForSpeedUpdate == 0 &&
-      Math.floor(game.distance) > game.speedLastUpdate
-    ) {
-      game.speedLastUpdate = Math.floor(game.distance);
-      game.targetBaseSpeed += game.incrementSpeedByTime * deltaTime;
-    }
-
-    if (
-      Math.floor(game.distance) % game.distanceForObstaclesSpawn == 0 &&
-      Math.floor(game.distance) > game.obstacleLastSpawn
-    ) {
-      game.obstacleLastSpawn = Math.floor(game.distance);
-      game.landObstacleLastSpawn = Math.floor(game.distance);
-      obstaclesHolder.spawnObstacles();
-      landObstaclesHolder.spawnObstacles();
-    }
-
-    // if (Math.floor(game.distance)%game.distanceForEnemiesSpawn == 0 && Math.floor(game.distance) > game.landObstacleLastSpawn){
-    //   game.landObstacleLastSpawn = Math.floor(game.distance);
-    //   landObstaclesHolder.spawnObstacles();
-    // }
-
-    // if (Math.floor(game.distance)%game.distanceForLandObstaclesSpawn == 0 && Math.floor(game.distance) > game.landObstacleLastSpawn){
-    //   game.landObstacleLastSpawn = Math.floor(game.distance);
-    //   landObstaclesHolder.spawnLandObstacles();
-    // }
-
-    if (
-      Math.floor(game.distance) % game.distanceForLevelUpdate == 0 &&
-      Math.floor(game.distance) > game.levelLastUpdate
-    ) {
-      game.levelLastUpdate = Math.floor(game.distance);
-      game.level++;
-      game.targetBaseSpeed = game.initSpeed + game.incrementSpeedByLevel * game.level;
-    }
-
-    updatePlane();
-    updateDistance();
-    updateEnergy();
-    game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * 0.02;
-    game.speed = game.baseSpeed * game.planeSpeed;
-  } else if (game.status == "gameover") {
-    game.speed *= 0.99;
-    // airplane.mesh.rotation.z += (-Math.PI/2 - airplane.mesh.rotation.z)*.0002*deltaTime;
-    // airplane.mesh.rotation.x += 0.0003*deltaTime;
-    game.planeFallSpeed *= 1.05;
-    airplane.rocketGroup.position.y -= game.planeFallSpeed*deltaTime;
-
-    if (airplane.rocketGroup.position.y <-200){
-      showReplay();
-      game.status = "waitingReplay";
-    }
-  } else if (game.status == "waitingReplay") {
-    // Stop music
-    music.pause();
-  }
-
-  // airplane.propeller.rotation.x +=.2 + game.planeSpeed * deltaTime*.005;
-  water.mesh.rotation.z += game.speed*deltaTime;//*game.seaRotationSpeed;
-
-  if (water.mesh.rotation.z > 2 * Math.PI) water.mesh.rotation.z -= 2 * Math.PI;
-
-  ambientLight.intensity += (0.5 - ambientLight.intensity) * deltaTime * 0.005;
-
-  coinsHolder.rotateCoins();
-  obstaclesHolder.rotateObstacles();
-  landObstaclesHolder.rotateObstacles();
-  sky.moveClouds();
-  water.moveWaves();
-  renderer.render(scene, camera);
-  requestAnimationFrame(loop);
-}
-
-*/
-let save;
-function loop()
-{
-  newTime = new Date().getTime();
-  deltaTime = newTime - oldTime;
-  oldTime = newTime;
-
-  
   if (game.status=="playing"){
     // Play music
     if (!musicPlaying) music.play();
@@ -409,16 +296,6 @@ function loop()
       landObstaclesHolder.spawnObstacles();
     }
 
-    // if (Math.floor(game.distance)%game.distanceForEnemiesSpawn == 0 && Math.floor(game.distance) > game.landObstacleLastSpawn){
-    //   game.landObstacleLastSpawn = Math.floor(game.distance);
-    //   landObstaclesHolder.spawnObstacles();
-    // }
-
-    // if (Math.floor(game.distance)%game.distanceForLandObstaclesSpawn == 0 && Math.floor(game.distance) > game.landObstacleLastSpawn){
-    //   game.landObstacleLastSpawn = Math.floor(game.distance);
-    //   landObstaclesHolder.spawnLandObstacles();
-    // }
-
     if (
       Math.floor(game.distance) % game.distanceForLevelUpdate == 0 &&
       Math.floor(game.distance) > game.levelLastUpdate
@@ -434,35 +311,26 @@ function loop()
     game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * 0.02;
     game.speed = game.baseSpeed * game.planeSpeed;
 
-      if (BoostStatus == 1){
-        console.log("Boosting...");
-        boostSound.play()
-        game.speed = game.baseSpeed * game.planeBoostSpeed;
-      }
-      else if (BoostStatus == 0)
-      {
-        boostSound.pause()
-      }
-  }
-  else if (game.status == "gameover") 
-  {
-      game.speed *= 0.99;
-      // airplane.mesh.rotation.z += (-Math.PI/2 - airplane.mesh.rotation.z)*.0002*deltaTime;
-      // airplane.mesh.rotation.x += 0.0003*deltaTime;
-      game.planeFallSpeed *= 1.05;
-      airplane.rocketGroup.position.y -= game.planeFallSpeed*deltaTime;
+    if (BoostStatus == 1) {
+      console.log("Boosting...");
+      boostSound.play()
+      game.speed = game.baseSpeed * game.planeBoostSpeed;
+    } else if (BoostStatus == 0) {
+      boostSound.pause()
+    }
+  } else if (game.status == "gameover") {
+    game.speed *= 0.99;
+    game.planeFallSpeed *= 1.05;
+    airplane.rocketGroup.position.y -= game.planeFallSpeed*deltaTime;
 
-      if (airplane.rocketGroup.position.y <-200){
-        showReplay();
-        game.status = "waitingReplay";
-      }
-  } 
-  else if (game.status == "waitingReplay") 
-  {
+    if (airplane.rocketGroup.position.y <-200) {
+      showReplay();
+      game.status = "waitingReplay";
+    }
+  } else if (game.status == "waitingReplay") {
     // Stop music
     music.pause();
   }
-  // airplane.propeller.rotation.x +=.2 + game.planeSpeed * deltaTime*.005;
   water.mesh.rotation.z += game.speed*deltaTime;//*game.seaRotationSpeed;
 
   if (water.mesh.rotation.z > 2 * Math.PI) water.mesh.rotation.z -= 2 * Math.PI;
@@ -478,7 +346,6 @@ function loop()
   requestAnimationFrame(loop);
 }
 
-
 function updateDistance() {
   game.distance += game.speed * deltaTime * game.ratioSpeedDistance;
   var d = 502 * (1 - (game.distance % game.distanceForLevelUpdate) / game.distanceForLevelUpdate);
@@ -487,12 +354,8 @@ function updateDistance() {
 var blinkEnergy = false;
 
 function updateEnergy(){
-  // game.energy = Math.max(0, game.energy);
   game.heart = Math.max(0, game.heart);
 
-  // if (game.energy <1){
-  //   game.status = "gameover";
-  // }
   if (game.heart <1){
     game.status = "gameover";
   }
@@ -500,24 +363,15 @@ function updateEnergy(){
 
 function addEnergy(){
   if (game.status == 'gameover') return;
-  // game.energy += 2;
-  // game.energy = Math.min(game.energy, 100);
 
   game.heart = Math.min(game.heart, 6);
 
   game.score += game.coinValue;
   game.heart_point += 2;
   coinsCounter.innerHTML =  game.score;
-  // healthCounter.innerHTML = 'Health = ' + game.energy;
+
   let invisible = healthCounter.getElementsByClassName('invisible')
   if(game.heart_point >=10 && game.heart < 5){
-    // var heart_icon = document.createElement('img');
-    // heart_icon.src = "./assets/photo/heart_icon.png"
-    // heart_icon.setAttribute("width", "50");
-    // heart_icon.setAttribute("height", "50");
-    // heart_icon.setAttribute("alt", "heart");
-    // heart_icon.classList.add('heart');
-    // healthCounter.appendChild(heart_icon);
     healthCounter.childNodes[healthCounter.childNodes.length - invisible.length].classList.add('visible')
     healthCounter.childNodes[healthCounter.childNodes.length - invisible.length].classList.remove('invisible')
     game.heart +=1;
@@ -532,9 +386,6 @@ function removeEnergy(){
   if (game.status == 'gameover') return;
   game.heart -= 1;
   game.heart = Math.max(0, game.heart)
-
-  // if(healthCounter.children.length > 0)
-  // healthCounter.removeChild(healthCounter.childNodes[0])
 
   let visible = healthCounter.getElementsByClassName('visible')
 
