@@ -6,7 +6,6 @@ Coin = function(){
     color:colorList.blue,
     shininess:0,
     specular:0xffffff,
-
     shading:THREE.FlatShading
   });
 
@@ -15,9 +14,9 @@ Coin = function(){
   this.angle = 0;
   this.dist = 0;
 }
-// Fungsi untuk membuat CoinsHolder untuk menyimpan objek - objek koin
-// yang sudah dibuat
-CoinsHolder = function (coinCount){
+
+// Fungsi untuk membuat CoinsHolder untuk menyimpan objek - objek koin yang sudah dibuat
+CoinsHolder = function (coinCount) {
   this.mesh = new THREE.Object3D();
 
   this.coinsInUse = [];
@@ -27,24 +26,22 @@ CoinsHolder = function (coinCount){
     this.coinsPool.push(new Coin());
   }
 }
+
 // Fungsi untuk membuat koin pada game
-function createCoins()
-{
+function createCoins() {
   coinsHolder = new CoinsHolder(20);
   scene.add(coinsHolder.mesh)
 }
+
 // Fungsi untuk membuat koin - koin baru pada game secara acak
-CoinsHolder.prototype.spawnCoins = function()
-{
+CoinsHolder.prototype.spawnCoins = function() {
   let coinCount = 1 + Math.floor(Math.random()*10);
   let d = game.waterRadius + game.planeDefaultHeight + (-1 + Math.random() * 2) * (game.planeAmpHeight-20);
   let amplitude = 10 + Math.round(Math.random()*10);
 
   for (let i=0; i<coinCount; i++){
     let coin;
-
-    if (this.coinsPool.length)
-    {
+    if (this.coinsPool.length) {
       coin = this.coinsPool.pop();
     } else {
       coin = new Coin();
@@ -62,10 +59,8 @@ CoinsHolder.prototype.spawnCoins = function()
 }
 
 // Fungsi untuk memutar objek - objek koin
-CoinsHolder.prototype.rotateCoins = function()
-{
-  for (let i = 0; i < this.coinsInUse.length; i++)
-  {
+CoinsHolder.prototype.rotateCoins = function() {
+  for (let i = 0; i < this.coinsInUse.length; i++) {
     let coin = this.coinsInUse[i];
     if (coin.exploding) continue; // Jika koin sudah diambil, jangan diupdate
 
