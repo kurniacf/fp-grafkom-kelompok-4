@@ -252,11 +252,13 @@ function createLights() {
 }
 
 let save;
-function loop() {
+function loop()
+{
   newTime = new Date().getTime();
   deltaTime = newTime - oldTime;
   oldTime = newTime;
 
+  
   if (game.status=="playing"){
     // Play music
     if (!musicPlaying) music.play();
@@ -296,6 +298,16 @@ function loop() {
       landObstaclesHolder.spawnObstacles();
     }
 
+    // if (Math.floor(game.distance)%game.distanceForEnemiesSpawn == 0 && Math.floor(game.distance) > game.landObstacleLastSpawn){
+    //   game.landObstacleLastSpawn = Math.floor(game.distance);
+    //   landObstaclesHolder.spawnObstacles();
+    // }
+
+    // if (Math.floor(game.distance)%game.distanceForLandObstaclesSpawn == 0 && Math.floor(game.distance) > game.landObstacleLastSpawn){
+    //   game.landObstacleLastSpawn = Math.floor(game.distance);
+    //   landObstaclesHolder.spawnLandObstacles();
+    // }
+
     if (
       Math.floor(game.distance) % game.distanceForLevelUpdate == 0 &&
       Math.floor(game.distance) > game.levelLastUpdate
@@ -311,26 +323,33 @@ function loop() {
     game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * 0.02;
     game.speed = game.baseSpeed * game.planeSpeed;
 
-    if (BoostStatus == 1) {
-      console.log("Boosting...");
-      boostSound.play()
-      game.speed = game.baseSpeed * game.planeBoostSpeed;
-    } else if (BoostStatus == 0) {
-      boostSound.pause()
-    }
-  } else if (game.status == "gameover") {
-    game.speed *= 0.99;
-    game.planeFallSpeed *= 1.05;
-    airplane.rocketGroup.position.y -= game.planeFallSpeed*deltaTime;
+      if (BoostStatus == 1){
+        console.log("Boosting...");
+        boostSound.play()
+        game.speed = game.baseSpeed * game.planeBoostSpeed;
+      }
+      else if (BoostStatus == 0)
+      {
+        boostSound.pause()
+      }
+  }
+  else if (game.status == "gameover") 
+  {
+      game.speed *= 0.99;
+      game.planeFallSpeed *= 1.05;
+      airplane.rocketGroup.position.y -= game.planeFallSpeed*deltaTime;
 
-    if (airplane.rocketGroup.position.y <-200) {
-      showReplay();
-      game.status = "waitingReplay";
-    }
-  } else if (game.status == "waitingReplay") {
+      if (airplane.rocketGroup.position.y <-200){
+        showReplay();
+        game.status = "waitingReplay";
+      }
+  } 
+  else if (game.status == "waitingReplay") 
+  {
     // Stop music
     music.pause();
   }
+  // airplane.propeller.rotation.x +=.2 + game.planeSpeed * deltaTime*.005;
   water.mesh.rotation.z += game.speed*deltaTime;//*game.seaRotationSpeed;
 
   if (water.mesh.rotation.z > 2 * Math.PI) water.mesh.rotation.z -= 2 * Math.PI;
@@ -344,10 +363,12 @@ function loop() {
   water.moveWaves();
   renderer.render(scene, camera);
   requestAnimationFrame(loop);
+  fieldLevel.innerHTML = game.level;
 }
 
 function updateDistance() {
   game.distance += game.speed * deltaTime * game.ratioSpeedDistance;
+  fieldDistance.innerHTML = parseInt(game.distance);
   var d = 502 * (1 - (game.distance % game.distanceForLevelUpdate) / game.distanceForLevelUpdate);
 }
 
