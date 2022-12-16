@@ -42,7 +42,6 @@ Cloud = function(){
     shading: THREE.FlatShading
   });
 
-  //*
   let nBlocs = 3+Math.floor(Math.random()*3);
   for (let i=0; i<nBlocs; i++ ){
     let m = new THREE.Mesh(geom.clone(), mat);

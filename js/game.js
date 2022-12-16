@@ -117,7 +117,6 @@ function resetGame(){
   };
   coinsCounter.innerHTML = game.score;
   
-  // healthCounter.innerHTML = 'Health = '+ game.energy;
   for(var i=0; i<game.heart; i++){
     if(!heart_init){
       var heart_icon = document.createElement('img');
@@ -126,18 +125,17 @@ function resetGame(){
       heart_icon.classList.add('heart')
       heart_icon.classList.add('visible')
       healthCounter.appendChild(heart_icon)
-    }
-    else{
+    } else{
       healthCounter.childNodes[i].classList.remove('invisible')
       healthCounter.childNodes[i].classList.add('visible')
     }
   }
 }
+
 // Fungsi untuk menginisialisasi scene
 function createScene() {
   HEIGHT = window.innerHeight;
   WIDTH = window.innerWidth;
-
   scene = new THREE.Scene();
 
   aspectRatio = WIDTH / HEIGHT;
@@ -145,7 +143,6 @@ function createScene() {
   nearPlane = 0.1;
   farPlane = 10000;
   camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio, nearPlane, farPlane);
-
   scene.fog = new THREE.Fog(0x855988, 100, 950);
 
   // Setting posisi kamera
@@ -187,24 +184,19 @@ function handleTouchMove(event) {
 function handleMouseUp(event) {
   if (game.status == "waitingReplay") {
     resetGame();
-    // heart_init = 0;
     hideReplay();
     console.log(is3D);
     if (is3D) camera.position.set(-200, 100, 20);
-  }
-  else if (game.status == "playing"){
+  } else if (game.status == "playing") {
     if (BoostStatus == 1){
       BoostStatus = 0;
-    }
-    else if (BoostStatus == 0){
+    } else if (BoostStatus == 0) {
       BoostStatus = 1;
     }
-  }
-  else if (game.status == "playing"){
+  } else if (game.status == "playing"){
     if (BoostStatus == 1){
       BoostStatus = 0;
-    }
-    else if (BoostStatus == 0){
+    } else if (BoostStatus == 0){
       BoostStatus = 1;
     }
   }
@@ -213,7 +205,6 @@ function handleMouseUp(event) {
 function handleTouchEnd(event) {
   if (game.status == "waitingReplay") {
     resetGame();
-    // heart_init = 0;
     hideReplay();
   }
 }
@@ -255,7 +246,6 @@ function createLights() {
   shadowLight.shadow.mapSize.height = 4096;
   var ch = new THREE.CameraHelper(shadowLight.shadow.camera);
 
-  //scene.add(ch);
   scene.add(hemisphereLight);
   scene.add(shadowLight);
   scene.add(ambientLight);
@@ -376,7 +366,6 @@ function loop()
   fieldLevel.innerHTML = game.level;
 }
 
-
 function updateDistance() {
   game.distance += game.speed * deltaTime * game.ratioSpeedDistance;
   fieldDistance.innerHTML = parseInt(game.distance);
@@ -395,24 +384,15 @@ function updateEnergy(){
 
 function addEnergy(){
   if (game.status == 'gameover') return;
-  // game.energy += 2;
-  // game.energy = Math.min(game.energy, 100);
 
   game.heart = Math.min(game.heart, 6);
 
   game.score += game.coinValue;
   game.heart_point += 2;
   coinsCounter.innerHTML =  game.score;
-  // healthCounter.innerHTML = 'Health = ' + game.energy;
+
   let invisible = healthCounter.getElementsByClassName('invisible')
   if(game.heart_point >=10 && game.heart < 5){
-    // var heart_icon = document.createElement('img');
-    // heart_icon.src = "./assets/photo/heart_icon.png"
-    // heart_icon.setAttribute("width", "50");
-    // heart_icon.setAttribute("height", "50");
-    // heart_icon.setAttribute("alt", "heart");
-    // heart_icon.classList.add('heart');
-    // healthCounter.appendChild(heart_icon);
     healthCounter.childNodes[healthCounter.childNodes.length - invisible.length].classList.add('visible')
     healthCounter.childNodes[healthCounter.childNodes.length - invisible.length].classList.remove('invisible')
     game.heart +=1;
@@ -427,9 +407,6 @@ function removeEnergy(){
   if (game.status == 'gameover') return;
   game.heart -= 1;
   game.heart = Math.max(0, game.heart)
-
-  // if(healthCounter.children.length > 0)
-  // healthCounter.removeChild(healthCounter.childNodes[0])
 
   let visible = healthCounter.getElementsByClassName('visible')
 
