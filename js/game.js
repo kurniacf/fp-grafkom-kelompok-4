@@ -260,108 +260,7 @@ function createLights() {
   scene.add(shadowLight);
   scene.add(ambientLight);
 }
-/*
-let save;
-function loop() {
-  newTime = new Date().getTime();
-  deltaTime = newTime - oldTime;
-  oldTime = newTime;
-  if (game.status=="playing"){
-    // Play music
-    if (!musicPlaying) music.play();
-    if (is3D) {
-      camera.lookAt(
-        new THREE.Vector3(
-          airplane.mesh.position.x,
-          airplane.mesh.position.y,
-          airplane.mesh.position.z
-        )
-      );
-    }
-    // Add energy coins every 100m;
-    if (
-      Math.floor(game.distance) % game.distanceForCoinsSpawn == 0 &&
-      Math.floor(game.distance) > game.coinLastSpawn
-    ) {
-      game.coinLastSpawn = Math.floor(game.distance);
-      coinsHolder.spawnCoins();
-    }
 
-    if (
-      Math.floor(game.distance) % game.distanceForSpeedUpdate == 0 &&
-      Math.floor(game.distance) > game.speedLastUpdate
-    ) {
-      game.speedLastUpdate = Math.floor(game.distance);
-      game.targetBaseSpeed += game.incrementSpeedByTime * deltaTime;
-    }
-
-    if (
-      Math.floor(game.distance) % game.distanceForObstaclesSpawn == 0 &&
-      Math.floor(game.distance) > game.obstacleLastSpawn
-    ) {
-      game.obstacleLastSpawn = Math.floor(game.distance);
-      game.landObstacleLastSpawn = Math.floor(game.distance);
-      obstaclesHolder.spawnObstacles();
-      landObstaclesHolder.spawnObstacles();
-    }
-
-    // if (Math.floor(game.distance)%game.distanceForEnemiesSpawn == 0 && Math.floor(game.distance) > game.landObstacleLastSpawn){
-    //   game.landObstacleLastSpawn = Math.floor(game.distance);
-    //   landObstaclesHolder.spawnObstacles();
-    // }
-
-    // if (Math.floor(game.distance)%game.distanceForLandObstaclesSpawn == 0 && Math.floor(game.distance) > game.landObstacleLastSpawn){
-    //   game.landObstacleLastSpawn = Math.floor(game.distance);
-    //   landObstaclesHolder.spawnLandObstacles();
-    // }
-
-    if (
-      Math.floor(game.distance) % game.distanceForLevelUpdate == 0 &&
-      Math.floor(game.distance) > game.levelLastUpdate
-    ) {
-      game.levelLastUpdate = Math.floor(game.distance);
-      game.level++;
-      game.targetBaseSpeed = game.initSpeed + game.incrementSpeedByLevel * game.level;
-    }
-
-    updatePlane();
-    updateDistance();
-    updateEnergy();
-    game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * 0.02;
-    game.speed = game.baseSpeed * game.planeSpeed;
-  } else if (game.status == "gameover") {
-    game.speed *= 0.99;
-    // airplane.mesh.rotation.z += (-Math.PI/2 - airplane.mesh.rotation.z)*.0002*deltaTime;
-    // airplane.mesh.rotation.x += 0.0003*deltaTime;
-    game.planeFallSpeed *= 1.05;
-    airplane.rocketGroup.position.y -= game.planeFallSpeed*deltaTime;
-
-    if (airplane.rocketGroup.position.y <-200){
-      showReplay();
-      game.status = "waitingReplay";
-    }
-  } else if (game.status == "waitingReplay") {
-    // Stop music
-    music.pause();
-  }
-
-  // airplane.propeller.rotation.x +=.2 + game.planeSpeed * deltaTime*.005;
-  water.mesh.rotation.z += game.speed*deltaTime;//*game.seaRotationSpeed;
-
-  if (water.mesh.rotation.z > 2 * Math.PI) water.mesh.rotation.z -= 2 * Math.PI;
-
-  ambientLight.intensity += (0.5 - ambientLight.intensity) * deltaTime * 0.005;
-
-  coinsHolder.rotateCoins();
-  obstaclesHolder.rotateObstacles();
-  landObstaclesHolder.rotateObstacles();
-  sky.moveClouds();
-  water.moveWaves();
-  renderer.render(scene, camera);
-  requestAnimationFrame(loop);
-}
-
-*/
 let save;
 function loop()
 {
@@ -447,8 +346,6 @@ function loop()
   else if (game.status == "gameover") 
   {
       game.speed *= 0.99;
-      // airplane.mesh.rotation.z += (-Math.PI/2 - airplane.mesh.rotation.z)*.0002*deltaTime;
-      // airplane.mesh.rotation.x += 0.0003*deltaTime;
       game.planeFallSpeed *= 1.05;
       airplane.rocketGroup.position.y -= game.planeFallSpeed*deltaTime;
 
@@ -476,23 +373,21 @@ function loop()
   water.moveWaves();
   renderer.render(scene, camera);
   requestAnimationFrame(loop);
+  fieldLevel.innerHTML = game.level;
 }
 
 
 function updateDistance() {
   game.distance += game.speed * deltaTime * game.ratioSpeedDistance;
+  fieldDistance.innerHTML = parseInt(game.distance);
   var d = 502 * (1 - (game.distance % game.distanceForLevelUpdate) / game.distanceForLevelUpdate);
 }
 
 var blinkEnergy = false;
 
 function updateEnergy(){
-  // game.energy = Math.max(0, game.energy);
   game.heart = Math.max(0, game.heart);
 
-  // if (game.energy <1){
-  //   game.status = "gameover";
-  // }
   if (game.heart <1){
     game.status = "gameover";
   }
