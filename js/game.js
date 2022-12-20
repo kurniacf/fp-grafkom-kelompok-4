@@ -54,7 +54,6 @@ let music,
 // Fungsi untuk reset game
 function resetGame() {
   game = {
-    
     speed: 0,
     initSpeed: 0.00035,
     baseSpeed: 0.00035,
@@ -111,7 +110,7 @@ function resetGame() {
     obstacleLastSpawn: 0,
     distanceForObstaclesSpawn: 50,
     status: "playing",
-    landObstacleDistanceTolerance: 20,
+    landObstacleDistanceTolerance: 40,
     landObstacleValue: 10,
     landObstaclesSpeed: 0.1,
     landObstacleLastSpawn: 0,
@@ -321,10 +320,10 @@ function loop() {
     game.speed = game.baseSpeed * game.planeSpeed;
 
     if (BoostStatus == 1) {
-      boostSound.play();
       game.speed = game.baseSpeed * game.planeBoostSpeed;
-    } else if (BoostStatus == 0) {
       boostSound.pause();
+    } else if (BoostStatus == 0) {
+      boostSound.play();
     }
   } else if (game.status == "gameover") {
     game.speed *= 0.99;
@@ -391,6 +390,7 @@ function addEnergy() {
       setTimeout(function () {
         game.energy = 10;
         BoostStatus = 1;
+        boostSound.pause();
       }, 3000);
     }
   }
