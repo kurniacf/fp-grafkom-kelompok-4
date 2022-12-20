@@ -114,12 +114,12 @@ LandObstacleHolder.prototype.rotateObstacles = function(){
   let targetY = normalize(mousePos.y,-.75,.75,game.planeDefaultHeight-game.planeAmpHeight, game.planeDefaultHeight+game.planeAmpHeight)
   for (let i=0; i<this.landObstaclesInUse.length; i++){
     let obstacle = this.landObstaclesInUse[i];
-    obstacle.mesh.position.y = -20
-    obstacle.angle += game.speed*deltaTime*game.obstaclesSpeed;
+    obstacle.angle += game.speed * deltaTime * game.obstaclesSpeed;
 
-    if (obstacle.angle > Math.PI*2) obstacle.angle -= Math.PI*2;
+    if (obstacle.angle > Math.PI * 2) obstacle.angle -= Math.PI * 2;
 
-    obstacle.mesh.position.x = Math.cos(obstacle.angle)*obstacle.distance;
+    obstacle.mesh.position.y = -game.waterRadius + Math.sin(obstacle.angle) * obstacle.distance - 150;
+    obstacle.mesh.position.x = Math.cos(obstacle.angle) * obstacle.distance;
 
     var diffPos = airplane.rocketGroup.position.clone().sub(obstacle.mesh.position.clone());
     var d = diffPos.length();
