@@ -11,7 +11,7 @@ let colorList = {
 
 // Game variables
 let game;
-var BoostStatus = 0;
+var BoostStatus = 1;
 let is3D = false;
 let deltaTime = 0;
 let newTime = new Date().getTime();
@@ -52,82 +52,84 @@ let music,
   musicPlaying = 0;
 
 // Fungsi untuk reset game
-function resetGame(){
+function resetGame() {
   game = {
-    speed                         :0,
-    initSpeed                     :.00035,
-    baseSpeed                     :.00035,
-    targetBaseSpeed               :.00035,
-    incrementSpeedByTime          :0,//.0000025,
-    incrementSpeedByLevel         :.000005,
-    distanceForSpeedUpdate        :100,
-    speedLastUpdate               :0,
-    score                         :0,
-    distance                      :0,
-    ratioSpeedDistance            :50,
-    energy                        :100,
-    ratioSpeedEnergy              :3,
-    // energy:100,
-    heart:5,
-    heart_point:0,
-    level                         :1,
-    levelLastUpdate               :0,
-    distanceForLevelUpdate        :1000,
-    planeDefaultHeight            :100,
-    planeAmpHeight                :80,
-    planeAmpWidth                 :75,
-    planeMoveSensivity            :0.005,
-    planeRotXSensivity            :0.0008,
-    planeRotZSensivity            :0.0004,
-    planeFallSpeed                :.001,
-    planeMinSpeed                 :1.2,
-    planeMaxSpeed                 :4,
-    planeBoostSpeed               :1.6,
-    planeSpeed                    :0,
-    planeCollisionDisplacementX   :0,
-    planeCollisionSpeedX          :0,
-    planeCollisionDisplacementY   :0,
-    planeCollisionSpeedY          :0,
-    waterRadius                   :600,
-    waterLength                   :800,
-    // seaRotationSpeed              :0.006,
-    wavesMinAmp                   :5,
-    wavesMaxAmp                   :20,
-    wavesMinSpeed                 :0.001,
-    wavesMaxSpeed                 :0.003,
-    cameraFarPos                  :500,
-    cameraNearPos                 :150,
-    cameraSensivity               :0.002,
-    coinDistanceTolerance         :15,
-    coinValue                     :10,
-    coinsSpeed                    :.5,
-    coinLastSpawn                 :0,
-    distanceForCoinsSpawn         :100,
-    obstacleDistanceTolerance     :10,
-    obstacleValue                 :10,
-    obstaclesSpeed                :.6,
-    obstacleLastSpawn             :0,
-    distanceForObstaclesSpawn     :50,
-    status                        : "playing",
-    landObstacleDistanceTolerance :20,
-    landObstacleValue             :10,
-    landObstaclesSpeed            :.1,
-    landObstacleLastSpawn         :0,
+    
+    speed: 0,
+    initSpeed: 0.00035,
+    baseSpeed: 0.00035,
+    targetBaseSpeed: 0.00035,
+    incrementSpeedByTime: 0, //.0000025,
+    incrementSpeedByLevel: 0.000005,
+    distanceForSpeedUpdate: 100,
+    speedLastUpdate: 0,
+    score: 0,
+    distance: 0,
+    ratioSpeedDistance: 50,
+    // energy
+    energy: 15,
+    ratioSpeedEnergy: 3,
+    // heart
+    heart: 5,
+    heart_point: 0,
+    level: 1,
+    levelLastUpdate: 0,
+    distanceForLevelUpdate: 1000,
+    planeDefaultHeight: 100,
+    planeAmpHeight: 80,
+    planeAmpWidth: 75,
+    planeMoveSensivity: 0.005,
+    planeRotXSensivity: 0.0008,
+    planeRotZSensivity: 0.0004,
+    planeFallSpeed: 0.001,
+    planeMinSpeed: 1.2,
+    planeMaxSpeed: 4,
+    planeBoostSpeed: 1.6,
+    planeSpeed: 0,
+    planeCollisionDisplacementX: 0,
+    planeCollisionSpeedX: 0,
+    planeCollisionDisplacementY: 0,
+    planeCollisionSpeedY: 0,
+    waterRadius: 600,
+    waterLength: 800,
+    //seaRotationSpeed:0.006,
+    wavesMinAmp: 5,
+    wavesMaxAmp: 20,
+    wavesMinSpeed: 0.001,
+    wavesMaxSpeed: 0.003,
+    cameraFarPos: 500,
+    cameraNearPos: 150,
+    cameraSensivity: 0.002,
+    coinDistanceTolerance: 15,
+    coinValue: 10,
+    coinsSpeed: 0.5,
+    coinLastSpawn: 0,
+    distanceForCoinsSpawn: 100,
+    obstacleDistanceTolerance: 10,
+    obstacleValue: 10,
+    obstaclesSpeed: 0.6,
+    obstacleLastSpawn: 0,
+    distanceForObstaclesSpawn: 50,
+    status: "playing",
+    landObstacleDistanceTolerance: 20,
+    landObstacleValue: 10,
+    landObstaclesSpeed: 0.1,
+    landObstacleLastSpawn: 0,
     // distanceForLandObstaclesSpawn :50
   };
   coinsCounter.innerHTML = game.score;
-  
-  for(var i=0; i<game.heart; i++){
-    if(!heart_init){
-      var heart_icon = document.createElement('img');
-      heart_icon.src = "./assets/photo/heart_icon.png"
+
+  for (var i = 0; i < game.heart; i++) {
+    if (!heart_init) {
+      var heart_icon = document.createElement("img");
+      heart_icon.src = "./assets/photo/heart_icon.png";
       heart_icon.setAttribute("alt", "heart");
-      heart_icon.classList.add('heart')
-      heart_icon.classList.add('visible')
-      healthCounter.appendChild(heart_icon)
-    } else{
-      healthCounter.childNodes[i].classList.remove('invisible')
-      healthCounter.childNodes[i].classList.add('visible')
+      heart_icon.classList.add("heart");
+      heart_icon.classList.add("visible");
+      healthCounter.appendChild(heart_icon);
+    } else {
+      healthCounter.childNodes[i].classList.remove("invisible");
+      healthCounter.childNodes[i].classList.add("visible");
     }
   }
 }
@@ -187,18 +189,7 @@ function handleMouseUp(event) {
     hideReplay();
     console.log(is3D);
     if (is3D) camera.position.set(-200, 100, 20);
-  } else if (game.status == "playing") {
-    if (BoostStatus == 1){
-      BoostStatus = 0;
-    } else if (BoostStatus == 0) {
-      BoostStatus = 1;
-    }
-  } else if (game.status == "playing"){
-    if (BoostStatus == 1){
-      BoostStatus = 0;
-    } else if (BoostStatus == 0){
-      BoostStatus = 1;
-    }
+    else camera.position.set(0, 400, game.planeDefaultHeight + 100);
   }
 }
 
@@ -252,14 +243,16 @@ function createLights() {
 }
 
 let save;
-function loop()
-{
+var r = document.querySelector(":root");
+
+function loop() {
   newTime = new Date().getTime();
   deltaTime = newTime - oldTime;
   oldTime = newTime;
 
-  
-  if (game.status=="playing"){
+  r.style.setProperty("--energyBarWidth", `${game.energy}%`);
+
+  if (game.status == "playing") {
     // Play music
     if (!musicPlaying) music.play();
     if (is3D) {
@@ -270,8 +263,12 @@ function loop()
           airplane.rocketGroup.position.z
         )
       );
+    } else {
+      camera.lookAt(
+        new THREE.Vector3(0, airplane.rocketGroup.position.y, airplane.rocketGroup.position.z)
+      );
     }
-    // Add energy coins every 100m;
+    // Add coins every 100m;
     if (
       Math.floor(game.distance) % game.distanceForCoinsSpawn == 0 &&
       Math.floor(game.distance) > game.coinLastSpawn
@@ -323,34 +320,27 @@ function loop()
     game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * 0.02;
     game.speed = game.baseSpeed * game.planeSpeed;
 
-      if (BoostStatus == 1){
-        console.log("Boosting...");
-        boostSound.play()
-        game.speed = game.baseSpeed * game.planeBoostSpeed;
-      }
-      else if (BoostStatus == 0)
-      {
-        boostSound.pause()
-      }
-  }
-  else if (game.status == "gameover") 
-  {
-      game.speed *= 0.99;
-      game.planeFallSpeed *= 1.05;
-      airplane.rocketGroup.position.y -= game.planeFallSpeed*deltaTime;
+    if (BoostStatus == 1) {
+      boostSound.play();
+      game.speed = game.baseSpeed * game.planeBoostSpeed;
+    } else if (BoostStatus == 0) {
+      boostSound.pause();
+    }
+  } else if (game.status == "gameover") {
+    game.speed *= 0.99;
+    game.planeFallSpeed *= 1.05;
+    airplane.rocketGroup.position.y -= game.planeFallSpeed * deltaTime;
 
-      if (airplane.rocketGroup.position.y <-200){
-        showReplay();
-        game.status = "waitingReplay";
-      }
-  } 
-  else if (game.status == "waitingReplay") 
-  {
+    if (airplane.rocketGroup.position.y < -200) {
+      showReplay();
+      game.status = "waitingReplay";
+    }
+  } else if (game.status == "waitingReplay") {
     // Stop music
     music.pause();
   }
   // airplane.propeller.rotation.x +=.2 + game.planeSpeed * deltaTime*.005;
-  water.mesh.rotation.z += game.speed*deltaTime;//*game.seaRotationSpeed;
+  water.mesh.rotation.z += game.speed * deltaTime; //*game.seaRotationSpeed;
 
   if (water.mesh.rotation.z > 2 * Math.PI) water.mesh.rotation.z -= 2 * Math.PI;
 
@@ -374,28 +364,46 @@ function updateDistance() {
 
 var blinkEnergy = false;
 
-function updateEnergy(){
+function updateEnergy() {
   game.heart = Math.max(0, game.heart);
 
-  if (game.heart <1){
+  if (game.heart < 1) {
     game.status = "gameover";
   }
 }
 
-function addEnergy(){
-  if (game.status == 'gameover') return;
+function addEnergy() {
+  if (game.status == "gameover") return;
 
   game.heart = Math.min(game.heart, 6);
 
   game.score += game.coinValue;
   game.heart_point += 2;
-  coinsCounter.innerHTML =  game.score;
 
-  let invisible = healthCounter.getElementsByClassName('invisible')
-  if(game.heart_point >=10 && game.heart < 5){
-    healthCounter.childNodes[healthCounter.childNodes.length - invisible.length].classList.add('visible')
-    healthCounter.childNodes[healthCounter.childNodes.length - invisible.length].classList.remove('invisible')
-    game.heart +=1;
+  coinsCounter.innerHTML = game.score;
+
+  if (game.energy < 100) {
+    game.energy += game.ratioSpeedEnergy;
+    game.energy > 100 ? (game.energy = 100) : (game.energy = game.energy);
+    BoostStatus = 1;
+    if (game.energy >= 100) {
+      BoostStatus = 0;
+      setTimeout(function () {
+        game.energy = 10;
+        BoostStatus = 1;
+      }, 3000);
+    }
+  }
+
+  let invisible = healthCounter.getElementsByClassName("invisible");
+  if (game.heart_point >= 20 && game.heart < 5) {
+    healthCounter.childNodes[healthCounter.childNodes.length - invisible.length].classList.add(
+      "visible"
+    );
+    healthCounter.childNodes[healthCounter.childNodes.length - invisible.length].classList.remove(
+      "invisible"
+    );
+    game.heart += 1;
     game.heart_point = 0;
   }
 
@@ -403,16 +411,16 @@ function addEnergy(){
   var asd = pickupSound.play();
 }
 
-function removeEnergy(){
-  if (game.status == 'gameover') return;
+function removeEnergy() {
+  if (game.status == "gameover") return;
   game.heart -= 1;
-  game.heart = Math.max(0, game.heart)
+  game.heart = Math.max(0, game.heart);
 
-  let visible = healthCounter.getElementsByClassName('visible')
+  let visible = healthCounter.getElementsByClassName("visible");
 
-  if(visible.length){
-    healthCounter.childNodes[visible.length-1].classList.add('invisible')
-    healthCounter.childNodes[visible.length-1].classList.remove('visible')
+  if (visible.length) {
+    healthCounter.childNodes[visible.length - 1].classList.add("invisible");
+    healthCounter.childNodes[visible.length - 1].classList.remove("visible");
   }
   // Play hurt sound
   hurtSound.play();
@@ -444,14 +452,14 @@ function init(event) {
   replayMessage = document.getElementById("replayMessage");
   fieldLevel = document.getElementById("levelValue");
   levelCircle = document.getElementById("levelCircleStroke");
-  coinsCounter = document.getElementById('coinsValue');
-  healthCounter = document.getElementById('healthCounter');
+  coinsCounter = document.getElementById("coinsValue");
+  healthCounter = document.getElementById("healthCounter");
 
   resetGame();
   heart_init = 1;
-  game.status = 'waitingReplay';
-  replayMessage.style.display = 'block';
-  
+  game.status = "waitingReplay";
+  replayMessage.style.display = "block";
+
   createScene();
   createLights();
   createPlane();
@@ -468,10 +476,10 @@ function init(event) {
   document.addEventListener("keydown", handleKeyDown, false);
 
   // SOUND EFFECTS
-  pickupSound = new Audio('assets/pickup.mp3');
-  hurtSound = new Audio('assets/explosion.mp3');
-  music = new Audio('assets/bgm.mp3');
-  boostSound = new Audio('assets/boost-extended-ver.mp3');
+  pickupSound = new Audio("assets/pickup.mp3");
+  hurtSound = new Audio("assets/explosion.mp3");
+  music = new Audio("assets/bgm.mp3");
+  boostSound = new Audio("assets/boost-extended-ver.mp3");
 
   pickupSound.volume = 0.75;
   hurtSound.volume = 0.5;
