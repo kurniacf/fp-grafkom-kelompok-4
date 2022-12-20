@@ -1,11 +1,12 @@
 // Fungsi untuk membuat objek koin baru
 Coin = function(){
-  let geom = new THREE.TetrahedronGeometry(5,0);
+  let geom = new THREE.CylinderGeometry(4, 4, 1, 10)
 
   let mat = new THREE.MeshPhongMaterial({
-    color:colorList.blue,
-    shininess:0,
-    specular:0xffffff,
+    color: 0xFFD700 ,
+    shininess: 1,
+    specular: 0xffffff,
+    flatShading: true,
 
     shading:THREE.FlatShading
   });

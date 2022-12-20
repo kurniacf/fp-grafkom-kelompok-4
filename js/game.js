@@ -90,7 +90,7 @@ function resetGame(){
     planeCollisionSpeedY          :0,
     waterRadius                   :600,
     waterLength                   :800,
-    //seaRotationSpeed:0.006,
+    // seaRotationSpeed              :0.006,
     wavesMinAmp                   :5,
     wavesMaxAmp                   :20,
     wavesMinSpeed                 :0.001,

@@ -406,7 +406,6 @@ function updatePlane() {
   // Update posisi pesawat
   airplane.rocketGroup.position.y += (targetY-airplane.rocketGroup.position.y)*deltaTime*game.planeMoveSensivity;
   airplane.rocketGroup.position.x += (targetX-airplane.rocketGroup.position.x)*deltaTime*game.planeMoveSensivity;
-  console.log('posisi y pesawat ' + airplane.rocketGroup.position.y)
   // Update rotasi pesawat
   // airplane.rocketGroup.rotation.z = (targetY-airplane.rocketGroup.position.y)*deltaTime*game.planeRotXSensivity;
   airplane.rocketGroup.rotation.z = 3*Math.PI/2;

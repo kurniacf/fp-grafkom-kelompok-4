@@ -57,7 +57,6 @@ LandObstacleHolder = function (){
 }
 
 ObstaclesHolder.prototype.spawnObstacles = function(){
-  console.log('air obstacle has spawned')
   let nObstacles = game.level;
 
   for (let i = 0; i < nObstacles; i++) {
@@ -117,15 +116,13 @@ ObstaclesHolder.prototype.rotateObstacles = function () {
 }
 
 LandObstacleHolder.prototype.rotateObstacles = function(){
-  let targetY = normalize(mousePos.y,-.75,.75,game.planeDefaultHeight-game.planeAmpHeight, game.planeDefaultHeight+game.planeAmpHeight)
   for (let i=0; i<this.landObstaclesInUse.length; i++){
     let obstacle = this.landObstaclesInUse[i];
-    obstacle.mesh.position.y = -20
     obstacle.angle += game.speed*deltaTime*game.obstaclesSpeed;
 
     if (obstacle.angle > Math.PI*2) obstacle.angle -= Math.PI*2;
 
-    // obstacle.mesh.position.y = -game.waterRadius + Math.sin(obstacle.angle)*(game.wavesMinAmp + Math.random()*(game.wavesMaxAmp-game.wavesMinAmp));
+    obstacle.mesh.position.y = -game.waterRadius + Math.sin(obstacle.angle)*(obstacle.distance-2);
     obstacle.mesh.position.x = Math.cos(obstacle.angle)*obstacle.distance;
 
     //var globalObstaclePosition =  obstacle.mesh.localToWorld(new THREE.Vector3());
@@ -135,9 +132,9 @@ LandObstacleHolder.prototype.rotateObstacles = function(){
       // particlesHolder.spawnParticles(obstacle.mesh.position.clone(), 15, colorList.red, 3);
 
       landObstaclesPool.unshift(this.landObstaclesInUse.splice(i,1)[0]);
-      this.mesh.remove(obstacle.mesh);
       game.planeCollisionSpeedX = 100 * diffPos.x / d;
       game.planeCollisionSpeedY = 100 * diffPos.y / d;
+      this.mesh.remove(obstacle.mesh);
       ambientLight.intensity = 2;
 
       removeEnergy();
@@ -151,20 +148,20 @@ LandObstacleHolder.prototype.rotateObstacles = function(){
 }
 
 LandObstacleHolder.prototype.spawnObstacles = function(){
-  console.log('land obstacle has spawned')
   let nObstacles = game.level;
 
   for (let i=0; i<nObstacles; i++){
     let landObstacle;
     if (landObstaclesPool.length) {
+      console.log("Posisi Land Obstacle y = "+ landObstaclesPool[0].mesh.position.y)
       landObstacle = landObstaclesPool.pop();
     }else{
       landObstacle = new LandObstacle();
     }
 
-    landObstacle.angle = - (i*0.5);
-    landObstacle.distance = game.waterRadius + game.planeDefaultHeight + (-1 + Math.random() * 2) * (game.planeAmpHeight-20);
-    landObstacle.mesh.position.y = -game.waterRadius + Math.sin(landObstacle.angle)*landObstacle.distance;
+    landObstacle.angle = - (i*0.8);
+    landObstacle.distance = game.waterRadius + game.planeDefaultHeight + (-3 + Math.random() * 2) * (game.planeAmpHeight-20);
+    landObstacle.mesh.position.y = -game.waterRadius + Math.sin(landObstacle.angle)*(landObstacle.distance-2);
     landObstacle.mesh.position.x = Math.cos(landObstacle.angle)*landObstacle.distance;
 
     this.mesh.add(landObstacle.mesh);
