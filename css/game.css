@@ -1,3 +1,7 @@
+:root {
+  --energyBarWidth: 0%;
+}
+
 .game-holder {
   position: absolute;
   width: 100%;
@@ -42,22 +46,22 @@
 }
 
 .header h2 {
-	font-size: 0.585em;
-	margin: 2rem 0;
-	white-space: nowrap;
-	text-indent: 1em;
-	letter-spacing: 1em;
-	text-transform: uppercase;
-	color: #d6483b;
+  font-size: 0.585em;
+  margin: 2rem 0;
+  white-space: nowrap;
+  text-indent: 1em;
+  letter-spacing: 1em;
+  text-transform: uppercase;
+  color: #d6483b;
 }
 
 .header h3 {
-	font-family: 'Playfair Display';
-	font-size: 2.5em;
-	line-height: 1;
-	margin: 0;
-	letter-spacing: -0.025em;
-	color: #d1b790;
+  font-family: "Playfair Display";
+  font-size: 2.5em;
+  line-height: 1;
+  margin: 0;
+  letter-spacing: -0.025em;
+  color: #d1b790;
 }
 
 #scoreCounter {
@@ -68,36 +72,36 @@
 }
 
 #lifes .heart {
-	display: inline-block;
-	width: 30px;
-	height: 30px;
-	margin-top: 10px;
-	opacity: 0.7;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  margin-top: 10px;
+  opacity: 0.7;
 }
 #lifes .heart img {
-	width: 100%;
-	height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 #lifes .heart.invisible {
-	visibility: hidden;
-	animation: disappearScale 0.1s ease-in-out;
+  visibility: hidden;
+  animation: disappearScale 0.1s ease-in-out;
 }
 
 #lifes .heart.visible {
-	animation: appearScale 0.1s ease-in-out;
+  animation: appearScale 0.1s ease-in-out;
 }
 
 .score__label {
-	grid-area: label;
-	align-self: start;
-	position: relative;
-	text-align: center;
-	color: var(--color-accent);
-	text-transform: uppercase;
-	font-size: 0.65rem;
-	letter-spacing: 0.15rem;
-	font-weight: bold;
+  grid-area: label;
+  align-self: start;
+  position: relative;
+  text-align: center;
+  color: var(--color-accent);
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  letter-spacing: 0.15rem;
+  font-weight: bold;
 }
 .score {
   width: 100%;
@@ -114,8 +118,8 @@
 }
 
 .score__content:nth-child(even) {
-	border-right: 1px solid #d1b790;
-	border-left: 1px solid #d1b790;
+  border-right: 1px solid #d1b790;
+  border-left: 1px solid #d1b790;
 }
 
 .score__label {
@@ -157,7 +161,24 @@
   height: 8px;
   margin-top: 20px;
   border-radius: 3px;
-  background-color: #d1b790;
+  background-color: black;
+}
+
+.score__value--energy::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--energyBarWidth);
+  background-color: #d6483b;
+  -webkit-animation-name: energy;
+  animation-name: energy;
+  -webkit-animation-duration: 150ms;
+  animation-duration: 150ms;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  border-radius: 3px;
 }
 
 .energy-bar {

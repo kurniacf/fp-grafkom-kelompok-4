@@ -11,7 +11,7 @@ let colorList = {
 
 // Game variables
 let game;
-var BoostStatus = 0;
+var BoostStatus = 1;
 let is3D = false;
 let deltaTime = 0;
 let newTime = new Date().getTime();
@@ -65,9 +65,10 @@ function resetGame() {
     score: 0,
     distance: 0,
     ratioSpeedDistance: 50,
-    energy: 100,
+    // energy
+    energy: 15,
     ratioSpeedEnergy: 3,
-    // energy:100,
+    // heart
     heart: 5,
     heart_point: 0,
     level: 1,
@@ -188,18 +189,6 @@ function handleMouseUp(event) {
     console.log(is3D);
     if (is3D) camera.position.set(-200, 100, 20);
     else camera.position.set(0, 400, game.planeDefaultHeight + 100);
-  } else if (game.status == "playing") {
-    if (BoostStatus == 1) {
-      BoostStatus = 0;
-    } else if (BoostStatus == 0) {
-      BoostStatus = 1;
-    }
-  } else if (game.status == "playing") {
-    if (BoostStatus == 1) {
-      BoostStatus = 0;
-    } else if (BoostStatus == 0) {
-      BoostStatus = 1;
-    }
   }
 }
 
@@ -253,15 +242,18 @@ function createLights() {
 }
 
 let save;
+var r = document.querySelector(":root");
+
 function loop() {
   newTime = new Date().getTime();
   deltaTime = newTime - oldTime;
   oldTime = newTime;
 
+  r.style.setProperty("--energyBarWidth", `${game.energy}%`);
+
   if (game.status == "playing") {
     // Play music
     if (!musicPlaying) music.play();
-    console.log(camera);
     if (is3D) {
       camera.lookAt(
         new THREE.Vector3(
@@ -275,7 +267,7 @@ function loop() {
         new THREE.Vector3(0, airplane.rocketGroup.position.y, airplane.rocketGroup.position.z)
       );
     }
-    // Add energy coins every 100m;
+    // Add coins every 100m;
     if (
       Math.floor(game.distance) % game.distanceForCoinsSpawn == 0 &&
       Math.floor(game.distance) > game.coinLastSpawn
@@ -328,7 +320,6 @@ function loop() {
     game.speed = game.baseSpeed * game.planeSpeed;
 
     if (BoostStatus == 1) {
-      console.log("Boosting...");
       boostSound.play();
       game.speed = game.baseSpeed * game.planeBoostSpeed;
     } else if (BoostStatus == 0) {
@@ -387,10 +378,24 @@ function addEnergy() {
 
   game.score += game.coinValue;
   game.heart_point += 2;
+
   coinsCounter.innerHTML = game.score;
 
+  if (game.energy < 100) {
+    game.energy += game.ratioSpeedEnergy;
+    game.energy > 100 ? (game.energy = 100) : (game.energy = game.energy);
+    BoostStatus = 1;
+    if (game.energy >= 100) {
+      BoostStatus = 0;
+      setTimeout(function () {
+        game.energy = 10;
+        BoostStatus = 1;
+      }, 3000);
+    }
+  }
+
   let invisible = healthCounter.getElementsByClassName("invisible");
-  if (game.heart_point >= 10 && game.heart < 5) {
+  if (game.heart_point >= 20 && game.heart < 5) {
     healthCounter.childNodes[healthCounter.childNodes.length - invisible.length].classList.add(
       "visible"
     );
