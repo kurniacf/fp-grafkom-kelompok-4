@@ -118,8 +118,10 @@ LandObstacleHolder.prototype.rotateObstacles = function(){
 
     if (obstacle.angle > Math.PI * 2) obstacle.angle -= Math.PI * 2;
 
-    obstacle.mesh.position.y = -game.waterRadius + Math.sin(obstacle.angle) * obstacle.distance - 150;
-    obstacle.mesh.position.x = Math.cos(obstacle.angle) * obstacle.distance;
+    // obstacle.angle += game.speed * deltaTime * game.obstaclesSpeed;
+
+    obstacle.mesh.position.y = -game.waterRadius + Math.sin(obstacle.angle) * obstacle.distance - 90;
+    obstacle.mesh.position.x = Math.cos(obstacle.angle) * obstacle.distance - 150;
 
     var diffPos = airplane.rocketGroup.position.clone().sub(obstacle.mesh.position.clone());
     var d = diffPos.length();
