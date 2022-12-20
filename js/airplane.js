@@ -5,26 +5,27 @@ var Rocket = function () {
 
   var OutlineShader = {
     uniforms: {
-      offset: { type: "f", value: 0.3 },
-      color: { type: "v3", value: new THREE.Color("#000000") },
-      alpha: { type: "f", value: 1.0 },
+      
+      offset: { type: 'f', value: 0.3 },
+      color: { type: 'c', value: new THREE.Color('#000000') },
+      alpha: { type: 'f', value: 1.0 },
     },
-
-    vertexShader: [
-      "uniform float offset;",
-      "void main() {",
-      "  vec4 pos = modelViewMatrix * vec4( position + normal * offset, 1.0 );",
-      "  gl_Position = projectionMatrix * pos;",
-      "}",
-    ].join("\n"),
-
-    fragmentShader: [
-      "uniform vec3 color;",
-      "uniform float alpha;",
-      "void main() {",
-      "  gl_FragColor = vec4( color, alpha );",
-      "}",
-    ].join("\n"),
+  
+    vertexShader:`
+      uniform float offset;
+      void main() {
+        vec4 pos = modelViewMatrix * vec4( position + normal * offset, 1.0 );
+        gl_Position = projectionMatrix * pos;
+      }
+    `,
+  
+    fragmentShader:`
+      uniform vec3 color;
+      uniform float alpha;
+      void main() {
+        gl_FragColor = vec4( color, alpha );
+      }
+    `
   };
 
   rocket.position.y = -1.5; // vertically center
@@ -52,6 +53,7 @@ var Rocket = function () {
     fragmentShader: OutlineShader.fragmentShader,
     side: THREE.BackSide,
   });
+
 
   var rocketObj = THREE.SceneUtils.createMultiMaterialObject(rocketGeo, [
     rocketMat,
@@ -157,8 +159,10 @@ var Rocket = function () {
   var fireGeo = new THREE.LatheGeometry(firePoints, 32);
   var fireMat = new THREE.ShaderMaterial({
     uniforms: {
-      color1: { value: new THREE.Color("blue") },
-      color2: { value: new THREE.Color(0xff7b00) }, // orange
+      
+      color1: { type: 'c', value: new THREE.Color('blue') },
+      color2: { type: 'c', value: new THREE.Color(0xff7b00)}
+
     },
     vertexShader: `
       varying vec2 vUv;
@@ -214,6 +218,7 @@ function updatePlane() {
   targetY += game.planeCollisionDisplacementY;
 
   // Update posisi pesawat
+
   airplane.rocketGroup.position.y +=
     (targetY - airplane.rocketGroup.position.y) * deltaTime * game.planeMoveSensivity;
   airplane.rocketGroup.position.x +=
@@ -233,7 +238,7 @@ function updatePlane() {
   camera.position.y +=
     (airplane.rocketGroup.position.y - camera.position.y) * deltaTime * game.cameraSensivity;
 
-  // Kecepatan pesawat setelah tabrakan
+  // Kecepatan roket setelah tabrakan
   game.planeCollisionSpeedX += (0 - game.planeCollisionSpeedX) * deltaTime * 0.03;
   game.planeCollisionDisplacementX += (0 - game.planeCollisionDisplacementX) * deltaTime * 0.01;
   game.planeCollisionSpeedY += (0 - game.planeCollisionSpeedY) * deltaTime * 0.03;

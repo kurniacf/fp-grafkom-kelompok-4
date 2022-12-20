@@ -54,6 +54,7 @@ let music,
 // Fungsi untuk reset game
 function resetGame() {
   game = {
+    
     speed: 0,
     initSpeed: 0.00035,
     baseSpeed: 0.00035,
