@@ -242,8 +242,8 @@ var fireGeo = new THREE.LatheGeometry( firePoints, 32 );
 
 var fireMat = new THREE.ShaderMaterial({
   uniforms: {
-    color1: { value: new THREE.Color('yellow') },
-    color2: { value: new THREE.Color(0xff7b00) } // orange
+    color1: { value: new THREE.Color(( 250, 0,0)) },
+    color2: { value: new THREE.Color(( 250, 190,0 )) } // orange
   },
   vertexShader: `
     varying vec2 vUv;
