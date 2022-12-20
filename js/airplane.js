@@ -3,9 +3,7 @@ var Rocket = function(){
   this.rocketGroup = new THREE.Group();
   var rocket = new THREE.Group();
 
-
   var OutlineShader = {
-
     uniforms: {
       offset: { type: 'f', value: 0.3 },
       color: { type: 'c', value: new THREE.Color('#000000') },
@@ -33,7 +31,6 @@ var Rocket = function(){
   this.rocketGroup.add( rocket );
 
   var points = [];
-
   points.push( new THREE.Vector2( 0, 0 ) ); // bottom
 
   for ( var i = 0; i < 11; i ++ ) {
@@ -41,19 +38,13 @@ var Rocket = function(){
       Math.cos( i * 0.227 - 0.75 ) * 8,
       i * 4.0
     );
-
     points.push( point );
   }
-
   points.push( new THREE.Vector2( 0, 40 ) ); // tip
 
 
   var rocketGeo = new THREE.LatheGeometry( points, 32 );
 
-  // var rocketMat = new THREE.MeshToonMaterial({
-  //   color: 0xcccccc,
-  //   shininess: 1
-  // });
   var rocketMat = new THREE.MeshPhongMaterial({
     color: 0xcccccc,
     shininess: 1
@@ -74,7 +65,7 @@ var Rocket = function(){
 
   // window
   var portalGeo = new THREE.CylinderBufferGeometry( 0.26, 0.26, 1.6, 32 );
-  // var portalMat = new THREE.MeshToonMaterial({ color: 0x90dcff });
+
   var portalMat = new THREE.MeshPhongMaterial({ color: 0x90dcff });
 
   var portalOutlineMat = rocketOutlineMat.clone();
@@ -102,10 +93,7 @@ var Rocket = function(){
   var tubeGeo = new THREE.ExtrudeGeometry( circle, tubeExtrudeSettings );
   tubeGeo.computeVertexNormals();
   tubeGeo.center();
-  // var tubeMat = new THREE.MeshToonMaterial({
-  //   color: 0xff0000,
-  //   shininess: 1
-  // });
+  
   var tubeMat = new THREE.MeshPhongMaterial({
     color: 0xff0000,
     shininess: 1
@@ -120,7 +108,6 @@ var Rocket = function(){
   rocket.add( tube );
 
   // wing
-
   var shape = new THREE.Shape();
 
   shape.moveTo( 3, 0 );
@@ -142,10 +129,7 @@ var Rocket = function(){
 
   var wingGeo = new THREE.ExtrudeGeometry( shape, extrudeSettings );
   wingGeo.computeVertexNormals();
-  // var wingMat = new THREE.MeshToonMaterial({
-  //   color: 0xff0000,
-  //   shininess: 1,
-  // });
+  
   var wingMat = new THREE.MeshPhongMaterial({
     color: 0xff0000,
     shininess: 1,
@@ -171,11 +155,8 @@ var Rocket = function(){
   wing4.rotation.y = - Math.PI / 2;
   rocket.add( wing4 );
   
-
   // fire
-
   var firePoints = [];
-
   for ( var i = 0; i <= 10; i ++ ) {
     var point = new THREE.Vector2(
       Math.sin( i * 0.18 ) * 8,
@@ -186,7 +167,6 @@ var Rocket = function(){
   }
 
   var fireGeo = new THREE.LatheGeometry( firePoints, 32 );
-
   var fireMat = new THREE.ShaderMaterial({
     uniforms: {
       color1: { type: 'c', value: new THREE.Color('blue') },
@@ -194,7 +174,6 @@ var Rocket = function(){
     },
     vertexShader: `
       varying vec2 vUv;
-
       void main() {
         vUv = uv;
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
@@ -203,9 +182,7 @@ var Rocket = function(){
     fragmentShader: `
       uniform vec3 color1;
       uniform vec3 color2;
-
       varying vec2 vUv;
-
       void main() {
         gl_FragColor = vec4(mix(color1, color2, vUv.y), 1.0);
       }
@@ -219,11 +196,6 @@ var Rocket = function(){
   var fireLight = new THREE.PointLight( 0xff7b00, 1, 9 );
   fireLight.position.set( 0, -1, 0 );
   rocket.add( fireLight );
-
-  // var fireLightHelper = new THREE.PointLightHelper( fireLight, 0.5 );
-  // scene.add( fireLightHelper );
-  console.log(fireMat)
-  console.log(rocketOutlineMat)
 }
 
 
@@ -236,7 +208,6 @@ function createPlane(){
 }
 
 function updatePlane() {
-  
   // Kontrol pesawat
   game.planeSpeed = normalize(mousePos.x, -0.5, 0.5, game.planeMinSpeed, game.planeMaxSpeed);
   let targetY = normalize(

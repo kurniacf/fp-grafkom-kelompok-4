@@ -4,7 +4,6 @@ function createObstacles() {
     obstaclesPool.push(obstacle);
   }
   obstaclesHolder = new ObstaclesHolder();
-  // obstaclesHolder.mesh.position.y = -game.seaRadius;
   scene.add(obstaclesHolder.mesh);
 }
 
@@ -19,7 +18,6 @@ function createLandObstacles(){
 
 Obstacle = function(){
   let geom = new THREE.DodecahedronGeometry(8,0);
-  //let geom = new THREE.CubeGeometry(12, 12, 12);
   let mat = new THREE.MeshPhongMaterial({
     color:new THREE.Color( 0xC7BCA1 ),
     shininess:0,
@@ -92,13 +90,9 @@ ObstaclesHolder.prototype.rotateObstacles = function () {
     obstacle.mesh.rotation.z += Math.random() * 0.1;
     obstacle.mesh.rotation.y += Math.random() * 0.1;
 
-    //var globalObstaclePosition =  obstacle.mesh.localToWorld(new THREE.Vector3());
     var diffPos = airplane.rocketGroup.position.clone().sub(obstacle.mesh.position.clone());
     var d = diffPos.length();
     if (d<game.obstacleDistanceTolerance){
-    //let globalObstaclePosition =  obstacle.mesh.localToWorld(new THREE.Vector3());
-      // particlesHolder.spawnParticles(obstacle.mesh.position.clone(), 15, colorList.red, 3);
-
       obstaclesPool.unshift(this.obstaclesInUse.splice(i, 1)[0]);
       this.mesh.remove(obstacle.mesh);
       game.planeCollisionSpeedX = (100 * diffPos.x) / d;
@@ -125,21 +119,17 @@ LandObstacleHolder.prototype.rotateObstacles = function(){
     obstacle.mesh.position.y = -game.waterRadius + Math.sin(obstacle.angle)*(obstacle.distance-2);
     obstacle.mesh.position.x = Math.cos(obstacle.angle)*obstacle.distance;
 
-    //var globalObstaclePosition =  obstacle.mesh.localToWorld(new THREE.Vector3());
     var diffPos = airplane.rocketGroup.position.clone().sub(obstacle.mesh.position.clone());
     var d = diffPos.length();
     if (d<game.landObstacleDistanceTolerance){
-      // particlesHolder.spawnParticles(obstacle.mesh.position.clone(), 15, colorList.red, 3);
-
       landObstaclesPool.unshift(this.landObstaclesInUse.splice(i,1)[0]);
       game.planeCollisionSpeedX = 100 * diffPos.x / d;
       game.planeCollisionSpeedY = 100 * diffPos.y / d;
       this.mesh.remove(obstacle.mesh);
       ambientLight.intensity = 2;
-
       removeEnergy();
       i--;
-    }else if (obstacle.angle > Math.PI){
+    } else if (obstacle.angle > Math.PI){
       landObstaclesPool.unshift(this.landObstaclesInUse.splice(i,1)[0]);
       this.mesh.remove(obstacle.mesh);
       i--;
@@ -155,7 +145,7 @@ LandObstacleHolder.prototype.spawnObstacles = function(){
     if (landObstaclesPool.length) {
       console.log("Posisi Land Obstacle y = "+ landObstaclesPool[0].mesh.position.y)
       landObstacle = landObstaclesPool.pop();
-    }else{
+    } else{
       landObstacle = new LandObstacle();
     }
 
