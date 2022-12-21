@@ -118,7 +118,7 @@ LandObstacleHolder.prototype.rotateObstacles = function () {
     if (obstacle.angle > Math.PI * 2) obstacle.angle -= Math.PI * 2;
 
     obstacle.mesh.position.y =
-      -game.waterRadius + Math.sin(obstacle.angle) * (obstacle.distance - 2);
+      -game.waterRadius + Math.sin(obstacle.angle) * (obstacle.distance - 2) + 10;
     obstacle.mesh.position.x = Math.cos(obstacle.angle) * obstacle.distance;
 
     var diffPos = airplane.rocketGroup.position.clone().sub(obstacle.mesh.position.clone());
@@ -153,9 +153,7 @@ LandObstacleHolder.prototype.spawnObstacles = function () {
 
     landObstacle.angle = -(i * 0.8);
     landObstacle.distance =
-      game.waterRadius +
-      game.planeDefaultHeight +
-      (-3 + Math.random() * 2) * (game.planeAmpHeight - 20);
+      game.waterRadius + game.planeDefaultHeight + (-2 + Math.random()) * (game.planeAmpHeight - 5);
     landObstacle.mesh.position.y =
       -game.waterRadius + Math.sin(landObstacle.angle) * (landObstacle.distance - 2);
     landObstacle.mesh.position.x = Math.cos(landObstacle.angle) * landObstacle.distance;
